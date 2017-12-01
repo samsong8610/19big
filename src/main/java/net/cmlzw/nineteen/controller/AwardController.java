@@ -1,0 +1,157 @@
+package net.cmlzw.nineteen.controller;
+
+import net.cmlzw.nineteen.domain.Award;
+import net.cmlzw.nineteen.domain.JobLock;
+import net.cmlzw.nineteen.domain.Person;
+import net.cmlzw.nineteen.domain.Quiz;
+import net.cmlzw.nineteen.repository.AwardRepository;
+import net.cmlzw.nineteen.repository.JobLockRepository;
+import net.cmlzw.nineteen.repository.PersonRepository;
+import net.cmlzw.nineteen.repository.QuizRepository;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping("/awards")
+public class AwardController {
+    private Logger logger = Logger.getLogger(this.getClass());
+    public static final String JOB_NAME = "cal_awards";
+
+    @Autowired
+    AwardRepository repository;
+    @Autowired
+    JobLockRepository jobLockRepository;
+    @Autowired
+    QuizRepository quizRepository;
+    @Autowired
+    PersonRepository personRepository;
+
+    @GetMapping
+    public Slice<Award> list(@PageableDefault(20) Pageable pageable) {
+        PageRequest pr = new PageRequest(pageable.getPageNumber(),
+            pageable.getPageSize(), Sort.Direction.DESC, "created");
+        return repository.findAll(pr);
+    }
+
+    @GetMapping("/queries/phone/{phone}")
+    public Award findByPhone(@PathVariable String phone) {
+        Award award = repository.findByPhone(phone);
+        if (award == null) {
+            throw new ResourceNotExistedException("award");
+        }
+        return award;
+    }
+
+    @PostMapping("/{id}")
+    public Award claim(@PathVariable Long id) {
+        Award award = repository.findOne(id);
+        if (award == null) {
+            throw new ResourceNotExistedException("award");
+        }
+        if (award.getClaimed() != null) {
+            throw new AlreadyClaimedException();
+        }
+        try {
+            award.setClaimed(new Date());
+            repository.save(award);
+        } catch (OptimisticLockingFailureException e) {
+            logger.warn("The award has been claimed.");
+            throw new AlreadyClaimedException();
+        }
+        return award;
+    }
+
+    @PutMapping("/{id}")
+    public Award edit(@PathVariable Long id, @RequestBody Award updated) {
+        Award award = repository.findOne(id);
+        if (award == null) {
+            throw new ResourceNotExistedException("award");
+        }
+        award.setNotified(updated.isNotified());
+        repository.save(award);
+        return award;
+    }
+
+    @Scheduled(cron = "00 00 * * * *")
+    public void calculateAwards() {
+        int retry = 0;
+        JobLock found = null;
+        boolean locked = false;
+        do {
+            try {
+                // get lock
+                found = jobLockRepository.findOne(JOB_NAME);
+                if (found == null) {
+                    JobLock jobLock = new JobLock(JOB_NAME, new Date());
+                    jobLockRepository.save(jobLock);
+                    locked = true;
+
+                    doCalculateAwards();
+                }
+                break;
+            } catch (DuplicateKeyException dke) {
+                logger.error("Lock awards calculation job failed", dke);
+            } catch (Exception e) {
+                logger.error("Calculate awards failed", e);
+            } finally {
+                if (locked) {
+                    try {
+                        jobLockRepository.delete(JOB_NAME);
+                    } catch (Exception e) {
+                        logger.warn("Unlock awards calculation job failed", e);
+                    }
+                }
+            }
+        } while(retry++ < 3);
+        if (retry >= 3) {
+            logger.error("Awards calculation failed after 3 times retry.");
+        }
+    }
+
+    public void doCalculateAwards() {
+        LocalDate yesterday = LocalDate.now().atStartOfDay().toLocalDate().minusDays(1);
+        List<Award> awards = new ArrayList<>(15);
+        for (int level = 1; level <= 3; level++) {
+            List<Quiz> quizzes = quizRepository.findTop20ByLevelAndCreatedOrderByScoreDesc(level, yesterday);
+            int count = 5;
+            if (quizzes.size() < 5) {
+                count = quizzes.size();
+            }
+            for (int i = 0; i < count; i++) {
+                Award award = new Award();
+                award.setNickname(getNickname(quizzes.get(i).getPersonId()));
+                award.setGift(level);
+                award.setPhone(quizzes.get(i).getPhone());
+                award.setCreated(new Date());
+                awards.add(award);
+            }
+        }
+        repository.save(awards);
+    }
+
+    private String getNickname(Long personId) {
+        try {
+            Person person = personRepository.findOne(personId);
+            if (person != null && person.getNickname() != null) {
+                return person.getNickname();
+            }
+        } catch (Exception e) {
+            logger.warn("Get nickname of uid " + personId.toString() + " failed", e);
+        }
+        return "";
+    }
+}

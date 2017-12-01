@@ -1,0 +1,25 @@
+plugins {
+    id "org.springframework.boot" version "1.5.8.RELEASE"
+}
+group 'net.cmlzw'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("net.sourceforge.nekohtml:nekohtml:1.9.15")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile("mysql:mysql-connector-java")
+    compile("com.h2database:h2")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
