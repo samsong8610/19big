@@ -12,6 +12,7 @@ public class JobLock {
     String job;
     Date created;
 
+    public JobLock() {}
     public JobLock(String jobName, Date date) {
         this.job = jobName;
         this.created = date;

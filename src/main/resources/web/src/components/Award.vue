@@ -25,6 +25,11 @@
             {{scope.row.created | moment('YYYY-MM-DD HH:mm:ss')}}
           </template>
         </el-table-column>
+        <el-table-column prop="notified" label="是否通知">
+          <template slot-scope="scope">
+            {{scope.row.notified ? '是' : '否'}}
+          </template>
+        </el-table-column>
         <el-table-column prop="claimed" label="领奖日期">
           <template slot-scope="scope">
             <!-- {{scope.row.claimed | safeMoment('YYYY-MM-DD HH:mm:ss')}} -->
@@ -33,8 +38,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="notify(scope.row, scope.$index)" type="success" plain size="small"><i class="el-icon-circle-bell"></i>已通知</el-button>
-            <el-button @click="claim(scope.row, scope.$index)" type="success" plain size="small"><i class="el-icon-circle-check"></i>已领取</el-button>
+            <el-button v-show="!scope.row.notified" @click="notify(scope.row, scope.$index)" type="text" size="small"><i class="el-icon-bell"></i>已通知</el-button>
+            <el-button v-show="scope.row.claimed === null" @click="claim(scope.row, scope.$index)" type="text" size="small"><i class="el-icon-circle-check"></i>已领取</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -97,11 +102,11 @@ export default {
   },
   methods: {
     load (page) {
-      this.awards = [
-        {id: 1, nickname: 'Sam', phone: '158****6899', gift: '学农奖品', created: 1511620429863, claimed: 1511620439863},
-        {id: 2, nickname: 'Sam', phone: '152****6899', gift: '学霸奖品', created: 1511620429863, claimed: 1511620439863},
-        {id: 3, nickname: 'Sam', phone: '158****6898', gift: '学神奖品', created: 1511620429863, claimed: undefined}
-      ]
+      // this.awards = [
+      //   {id: 1, nickname: 'Sam', phone: '158****6899', gift: '学农奖品', created: 1511620429863, claimed: 1511620439863},
+      //   {id: 2, nickname: 'Sam', phone: '152****6899', gift: '学霸奖品', created: 1511620429863, claimed: 1511620439863},
+      //   {id: 3, nickname: 'Sam', phone: '158****6898', gift: '学神奖品', created: 1511620429863, claimed: undefined}
+      // ]
       let p = page || 0
       Api.award.get({}, {page: p, size: 50}).then(resp => {
         resp.json().then(json => {
