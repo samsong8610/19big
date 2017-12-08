@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -24,24 +25,47 @@ public class AwardRepositoryTest {
     public void findByPhone() throws Exception {
         Award award = new Award();
         award.setNickname("u1");
-        award.setPhone("15800000000");
+        award.setPhone("15200000000");
         award.setGift(1);
         award.setCreated(new Date());
         entityManager.persist(award);
         Award another = new Award();
         another.setNickname("u1");
-        another.setPhone("15800000001");
+        another.setPhone("15200000001");
         another.setGift(1);
         another.setCreated(new Date());
 
-        Award actual = repository.findByPhone("15800000000");
+        List<Award> actual = repository.findByPhone("15200000000");
         assertNotNull(actual);
-        assertEquals(award, actual);
+        assertEquals(1, actual.size());
+        assertEquals(award, actual.get(0));
+    }
+
+    @Test
+    public void findByPhoneMultiple() throws Exception {
+        Award award = new Award();
+        award.setNickname("u1");
+        award.setPhone("15200000000");
+        award.setGift(1);
+        award.setCreated(new Date());
+        entityManager.persist(award);
+        Award another = new Award();
+        another.setNickname("u1");
+        another.setPhone("15200000000");
+        another.setGift(2);
+        another.setCreated(new Date());
+        entityManager.persist(another);
+
+        List<Award> actual = repository.findByPhone("15200000000");
+        assertNotNull(actual);
+        assertEquals(2, actual.size());
     }
 
     @Test
     public void findByPhoneNotFound() throws Exception {
-        assertNull(repository.findByPhone("15800000002"));
+        List<Award> actual = repository.findByPhone("15200000002");
+        assertNotNull(actual);
+        assertEquals(0, actual.size());
     }
 
 }

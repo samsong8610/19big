@@ -1,19 +1,20 @@
 package net.cmlzw.nineteen.controller;
 
 import net.cmlzw.nineteen.domain.Organization;
-import net.cmlzw.nineteen.domain.Person;
 import net.cmlzw.nineteen.domain.Quiz;
 import net.cmlzw.nineteen.repository.OrganizationRepository;
-import net.cmlzw.nineteen.repository.PersonRepository;
 import net.cmlzw.nineteen.repository.QuizRepository;
+import net.cmlzw.nineteen.repository.UserRepository;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,19 +25,19 @@ public class QuizController {
     @Autowired
     QuizRepository repository;
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
     @Autowired
     OrganizationRepository orgRepository;
 
     @PostMapping
-    public QuizDto create(@RequestBody Quiz quiz, Authentication authentication) {
-        Person user = (Person)authentication.getDetails();
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
-        Quiz found = repository.findByPersonIdAndLevelAndCreated(user.getId(), quiz.getLevel(), today);
+    public QuizDto create(@RequestBody Quiz quiz, Principal principal) {
+        String username = principal.getName();
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        Quiz found = repository.findByUsernameAndLevelAndCreated(username, quiz.getLevel(), today);
         if (found != null) {
             throw new AlreadySubmittedException();
         }
-        quiz.setPersonId(user.getId());
+        quiz.setUsername(username);
         quiz.setCreated(today);
         repository.save(quiz);
         if (quiz.getOrganizationId() != null) {
@@ -59,10 +60,10 @@ public class QuizController {
         return valueFrom(quiz);
     }
 
-    @GetMapping("/{uid}")
-    public List<QuizDto> getSubmmitted(@PathVariable Long uid) {
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
-        List<Quiz> found = repository.findByPersonIdAndCreated(uid, today);
+    @GetMapping("/{username}")
+    public List<QuizDto> getSubmmitted(@PathVariable String username) {
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        List<Quiz> found = repository.findByUsernameAndCreated(username, today);
         if (found != null && found.size() > 0) {
             List<QuizDto> result = new ArrayList<>(found.size());
             for (Quiz each : found) {
@@ -77,7 +78,7 @@ public class QuizController {
     public List<QuizDto> getBoardsAt(
             @PathVariable Integer level,
             @RequestParam(required = false, defaultValue = "-1") int topn) {
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         List<Quiz> boards = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(level, today);
         if (topn <= 0 || topn > boards.size()) {
             topn = boards.size();
@@ -98,8 +99,8 @@ public class QuizController {
         result.setLevel(quiz.getLevel());
         result.setPhone(quiz.getPhone());
         result.setScore(quiz.getScore());
-        result.setCreated(new Date(quiz.getCreated().toEpochDay()));
-        result.setPerson(personRepository.findOne(quiz.getId()));
+        result.setCreated(new Date(quiz.getCreated().getTime()));
+        result.setUser(userRepository.findOne(quiz.getUsername()));
         if (quiz.getOrganizationId() != null) {
             Organization org = orgRepository.findOne(quiz.getOrganizationId());
             if (org != null) {

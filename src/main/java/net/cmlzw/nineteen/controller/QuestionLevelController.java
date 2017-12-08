@@ -6,6 +6,7 @@ import net.cmlzw.nineteen.repository.QuestionLevelRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -45,6 +46,7 @@ public class QuestionLevelController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public QuestionLevel create(@RequestBody QuestionLevel level) {
 //        for (Question q : level.getQuestions()) {
@@ -54,6 +56,7 @@ public class QuestionLevelController {
         return level;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
     public QuestionLevel edit(@PathVariable Long id, @RequestBody QuestionLevel level) {
         QuestionLevel existed = repository.findOne(id);
@@ -91,6 +94,7 @@ public class QuestionLevelController {
         return existed;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

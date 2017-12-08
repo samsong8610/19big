@@ -1,9 +1,11 @@
 package net.cmlzw.nineteen.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 public class Quiz {
@@ -11,11 +13,12 @@ public class Quiz {
     @GeneratedValue
     Long id;
     int level;
-    Long personId;
+    String username;
     Long organizationId;
     String phone;
     int score;
-    LocalDate created;
+    @Column(columnDefinition = "date")
+    Date created;
 
     public Long getId() {
         return id;
@@ -33,12 +36,12 @@ public class Quiz {
         this.level = level;
     }
 
-    public Long getPersonId() {
-        return personId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPersonId(Long personId) {
-        this.personId = personId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getScore() {
@@ -65,11 +68,11 @@ public class Quiz {
         this.phone = phone;
     }
 
-    public LocalDate getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 }

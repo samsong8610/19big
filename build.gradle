@@ -20,6 +20,9 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("mysql:mysql-connector-java")
     compile("com.h2database:h2")
+    compile("org.springframework.social:spring-social-config")
+    compile("org.springframework.social:spring-social-security")
+    compile("org.apache.commons:commons-lang3:3.3.2")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import VueMoment from 'vue-moment'
 import VueResource from 'vue-resource'
 import Utils from './utils'
+import Auth from './auth'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -22,3 +23,16 @@ new Vue({
   template: '<App/>',
   components: { App }
 })
+
+router.beforeEach((to, from, next) => {
+  if (to !== '/' && !Auth.isAuthenticated) {
+    next({
+      path: '/',
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next()
+  }
+})
+
+// TODO: http auth filter

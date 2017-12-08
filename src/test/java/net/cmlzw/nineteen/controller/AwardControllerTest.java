@@ -3,6 +3,7 @@ package net.cmlzw.nineteen.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.cmlzw.nineteen.domain.*;
 import net.cmlzw.nineteen.repository.*;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -21,16 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.*;
 
-import static org.mockito.AdditionalMatchers.not;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -43,7 +42,7 @@ public class AwardControllerTest {
     @MockBean
     AwardRepository repository;
     @MockBean
-    PersonRepository personRepository;
+    UserRepository userRepository;
     @MockBean
     OrganizationRepository orgRepository;
     @MockBean
@@ -105,7 +104,7 @@ public class AwardControllerTest {
         award.setGift(1);
         award.setCreated(new Date());
 
-        given(repository.findByPhone("15800000000")).willReturn(award);
+        given(repository.findByPhone("15800000000")).willReturn(Arrays.asList(award));
         mockMvc.perform(get("/awards/queries/phone/15800000000"))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -210,16 +209,17 @@ public class AwardControllerTest {
         org.setId(1L);
         org.setName("org");
         org.setTotalMembers(100);
-        LocalDate yesterday = LocalDate.now().atStartOfDay().toLocalDate().minusDays(1);
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        Date yesterday = DateUtils.addDays(today, -1);
         List<Quiz> boards = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Person person = new Person();
-            person.setId(new Long(i));
-            person.setNickname("u"+i);
-            given(personRepository.findOne(person.getId())).willReturn(person);
+            User user = new User();
+            user.setUsername("u"+i);
+            user.setNickname("u"+i);
+            given(userRepository.findOne(user.getUsername())).willReturn(user);
 
             Quiz newQuiz = new Quiz();
-            newQuiz.setPersonId(person.getId());
+            newQuiz.setUsername(user.getUsername());
             newQuiz.setOrganizationId(org.getId());
             newQuiz.setLevel(1);
             newQuiz.setScore(i+1);

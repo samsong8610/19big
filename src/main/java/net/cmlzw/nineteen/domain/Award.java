@@ -1,9 +1,6 @@
 package net.cmlzw.nineteen.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -11,9 +8,12 @@ public class Award {
     @Id
     @GeneratedValue
     Long id;
+    @Column(nullable = false)
     String nickname;
+    @Column(nullable = false, length = 11)
     String phone;
     int gift;
+    @Column(nullable = false)
     Date created;
     boolean notified;
     @Version

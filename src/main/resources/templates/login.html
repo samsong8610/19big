@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+<h1>登录</h1>
+<p><a href="/auth/wechat?scope=snsapi_login_qrconnect">使用微信扫描二维码登录</a></p>
+<p><a href="/auth/wechat?scope=snsapi_login">在微信中登录</a></p>
+<!--<p><a href="https://open.weixin.qq.com/connect/qrconnect?appid=wxffcf430ee87dea58&redirect_uri=http%3a%2f%2flocalhost&response_type=code&scope=snsapi_login&state=test#wechat_redirect">微信扫码登录</a></p>-->
+<p><div id="login_container" style="border: 1px solid red;"></div></p>
+<script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+<script>
+    window.onload = ev => {
+        console.log('window loaded')
+        let wxLogin = new WxLogin({
+            id: 'login_container',
+            appid: 'wxffcf430ee87dea58',
+            scope: 'snsapi_login',
+            redirect_uri: 'http%3a%2f%2f19da.cmlzw.net%2fredirect',
+            state: '%2f19da.html'
+        })
+        window.wxLogin = wxLogin
+    }
+</script>
+</body>
+</html>

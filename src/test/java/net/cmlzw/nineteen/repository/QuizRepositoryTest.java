@@ -1,6 +1,7 @@
 package net.cmlzw.nineteen.repository;
 
 import net.cmlzw.nineteen.domain.Quiz;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,12 +10,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -23,19 +23,19 @@ public class QuizRepositoryTest {
     TestEntityManager entityManager;
     @Autowired
     QuizRepository repository;
-    private LocalDate today;
-    private LocalDate yesterday;
+    private Date today;
+    private Date yesterday;
 
     @Before
     public void setUp() throws Exception {
-        today = LocalDate.now().atStartOfDay().toLocalDate();
-        yesterday = today.minusDays(1);
+        today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        yesterday = DateUtils.addDays(today, -1);
 
         Quiz qXuemin = new Quiz();
         qXuemin.setPhone("15800000000");
         qXuemin.setScore(5);
         qXuemin.setLevel(1);
-        qXuemin.setPersonId(1L);
+        qXuemin.setUsername("u1");
         qXuemin.setCreated(today);
         entityManager.persist(qXuemin);
 
@@ -43,7 +43,7 @@ public class QuizRepositoryTest {
         qXueba.setPhone("15800000000");
         qXueba.setScore(4);
         qXueba.setLevel(2);
-        qXueba.setPersonId(1L);
+        qXueba.setUsername("u1");
         qXueba.setCreated(today);
         entityManager.persist(qXueba);
 
@@ -51,7 +51,7 @@ public class QuizRepositoryTest {
         qXueshen.setPhone("15800000000");
         qXueshen.setScore(3);
         qXueshen.setLevel(3);
-        qXueshen.setPersonId(1L);
+        qXueshen.setUsername("u1");
         qXueshen.setCreated(today);
         entityManager.persist(qXueshen);
 
@@ -59,7 +59,7 @@ public class QuizRepositoryTest {
         anotherXueba.setPhone("15800000001");
         anotherXueba.setScore(9);
         anotherXueba.setLevel(2);
-        anotherXueba.setPersonId(2L);
+        anotherXueba.setUsername("u2");
         anotherXueba.setOrganizationId(1L);
         anotherXueba.setCreated(today);
         entityManager.persist(anotherXueba);
@@ -68,28 +68,28 @@ public class QuizRepositoryTest {
         qYesterday.setPhone("15800000000");
         qYesterday.setScore(8);
         qYesterday.setLevel(1);
-        qYesterday.setPersonId(1L);
+        qYesterday.setUsername("u1");
         qYesterday.setCreated(yesterday);
         entityManager.persist(qYesterday);
     }
 
     @Test
     public void findByPersonIdAndCreated() throws Exception {
-        List<Quiz> actual = repository.findByPersonIdAndCreated(1L, today);
+        List<Quiz> actual = repository.findByUsernameAndCreated("u1", today);
         assertNotNull(actual);
         assertEquals(3, actual.size());
         assertEquals(1, actual.get(0).getLevel());
         assertEquals(2, actual.get(1).getLevel());
         assertEquals(3, actual.get(2).getLevel());
-        assertEquals(0, repository.findByPersonIdAndCreated(2L, yesterday).size());
+        assertEquals(0, repository.findByUsernameAndCreated("u2", yesterday).size());
     }
 
     @Test
     public void findByPersonIdAndLevelAndCreated() throws Exception {
-        Quiz actual = repository.findByPersonIdAndLevelAndCreated(1L, 1, today);
+        Quiz actual = repository.findByUsernameAndLevelAndCreated("u1", 1, today);
         assertNotNull(actual);
         assertEquals(5, actual.getScore());
-        assertNull(repository.findByPersonIdAndLevelAndCreated(1L, 2, yesterday));
+        assertNull(repository.findByUsernameAndLevelAndCreated("u1", 2, yesterday));
     }
 
     @Test
@@ -97,9 +97,9 @@ public class QuizRepositoryTest {
         List<Quiz> actual = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(2, today);
         assertNotNull(actual);
         assertEquals(2, actual.size());
-        assertEquals(2L, actual.get(0).getPersonId().longValue());
+        assertEquals("u2", actual.get(0).getUsername());
         assertEquals(9, actual.get(0).getScore());
-        assertEquals(1L, actual.get(1).getPersonId().longValue());
+        assertEquals("u1", actual.get(1).getUsername());
         assertEquals(4, actual.get(1).getScore());
     }
 }

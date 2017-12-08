@@ -1,18 +1,13 @@
 package net.cmlzw.nineteen.controller;
 
-import net.cmlzw.nineteen.domain.Person;
-import net.cmlzw.nineteen.domain.Quiz;
-import net.cmlzw.nineteen.repository.OrganizationRepository;
-import net.cmlzw.nineteen.repository.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.cmlzw.nineteen.domain.User;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class QuizDto {
     Long id;
     int level;
-    Person person;
+    User user;
     String organization;
     String phone;
     int score;
@@ -34,12 +29,12 @@ public class QuizDto {
         this.level = level;
     }
 
-    public Person getPerson() {
-        return person;
+    public User getUser() {
+        return user;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getOrganization() {

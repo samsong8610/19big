@@ -2,11 +2,12 @@ package net.cmlzw.nineteen.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.cmlzw.nineteen.domain.Organization;
-import net.cmlzw.nineteen.domain.Person;
+import net.cmlzw.nineteen.domain.User;
 import net.cmlzw.nineteen.domain.Quiz;
 import net.cmlzw.nineteen.repository.OrganizationRepository;
-import net.cmlzw.nineteen.repository.PersonRepository;
+import net.cmlzw.nineteen.repository.UserRepository;
 import net.cmlzw.nineteen.repository.QuizRepository;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -38,7 +37,7 @@ public class QuizControllerTest {
     @MockBean
     QuizRepository repository;
     @MockBean
-    PersonRepository personRepository;
+    UserRepository userRepository;
     @MockBean
     OrganizationRepository orgRepository;
     @Autowired
@@ -49,10 +48,10 @@ public class QuizControllerTest {
     @Test
     public void submitQuizByPartyMember() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
-        Person person = new Person();
-        person.setId(1L);
-        person.setNickname("u1");
-        principal.setDetails(person);
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
         Organization org = new Organization();
         org.setId(1L);
         org.setName("org");
@@ -60,7 +59,7 @@ public class QuizControllerTest {
         org.setVersion(1);
 
         Quiz newQuiz = new Quiz();
-        newQuiz.setPersonId(person.getId());
+        newQuiz.setUsername(user.getUsername());
         newQuiz.setOrganizationId(org.getId());
         newQuiz.setLevel(1);
         newQuiz.setScore(8);
@@ -68,7 +67,7 @@ public class QuizControllerTest {
         newQuiz.setId(1L);
         String body = mapper.writeValueAsString(newQuiz);
 
-        given(personRepository.findOne(newQuiz.getPersonId())).willReturn(person);
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
         mockMvc.perform(
                 post("/quizzes").contentType(MediaType.APPLICATION_JSON_UTF8).content(body)
@@ -77,8 +76,8 @@ public class QuizControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.person.id").value(1))
-                .andExpect(jsonPath("$.person.nickname").value("u1"))
+                .andExpect(jsonPath("$.user.username").value("u1"))
+                .andExpect(jsonPath("$.user.nickname").value("u1"))
                 .andExpect(jsonPath("$.organization").value("org"))
                 .andExpect(jsonPath("$.level").value(1))
                 .andExpect(jsonPath("$.score").value(8))
@@ -90,20 +89,20 @@ public class QuizControllerTest {
     @Test
     public void submitByPerson() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
-        Person person = new Person();
-        person.setId(1L);
-        person.setNickname("u1");
-        principal.setDetails(person);
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
 
         Quiz newQuiz = new Quiz();
-        newQuiz.setPersonId(person.getId());
+        newQuiz.setUsername(user.getUsername());
         newQuiz.setLevel(1);
         newQuiz.setScore(8);
         newQuiz.setPhone("15800000000");
         newQuiz.setId(1L);
         String body = mapper.writeValueAsString(newQuiz);
 
-        given(personRepository.findOne(newQuiz.getPersonId())).willReturn(person);
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         mockMvc.perform(
                 post("/quizzes").contentType(MediaType.APPLICATION_JSON_UTF8).content(body)
                         .principal(principal)
@@ -111,8 +110,8 @@ public class QuizControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.person.id").value(1))
-                .andExpect(jsonPath("$.person.nickname").value("u1"))
+                .andExpect(jsonPath("$.user.username").value("u1"))
+                .andExpect(jsonPath("$.user.nickname").value("u1"))
                 .andExpect(jsonPath("$.organization").doesNotExist())
                 .andExpect(jsonPath("$.level").value(1))
                 .andExpect(jsonPath("$.score").value(8))
@@ -123,17 +122,17 @@ public class QuizControllerTest {
     @Test
     public void submitQuizMoreThanOnceFailed() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
-        Person person = new Person();
-        person.setId(1L);
-        person.setNickname("u1");
-        principal.setDetails(person);
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
         Organization org = new Organization();
         org.setId(1L);
         org.setName("org");
         org.setTotalMembers(100);
 
         Quiz newQuiz = new Quiz();
-        newQuiz.setPersonId(person.getId());
+        newQuiz.setUsername(user.getUsername());
         newQuiz.setOrganizationId(org.getId());
         newQuiz.setLevel(1);
         newQuiz.setScore(8);
@@ -141,10 +140,10 @@ public class QuizControllerTest {
         newQuiz.setId(1L);
         String body = mapper.writeValueAsString(newQuiz);
 
-        given(personRepository.findOne(newQuiz.getPersonId())).willReturn(person);
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
-        given(repository.findByPersonIdAndLevelAndCreated(person.getId(), 1, today)).willReturn(newQuiz);
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        given(repository.findByUsernameAndLevelAndCreated(user.getUsername(), 1, today)).willReturn(newQuiz);
         mockMvc.perform(
                 post("/quizzes").contentType(MediaType.APPLICATION_JSON_UTF8).content(body)
                         .principal(principal)
@@ -156,17 +155,17 @@ public class QuizControllerTest {
     @Test
     public void submitQuizConflictShouldRetry() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
-        Person person = new Person();
-        person.setId(1L);
-        person.setNickname("u1");
-        principal.setDetails(person);
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
         Organization org = new Organization();
         org.setId(1L);
         org.setName("org");
         org.setTotalMembers(100);
 
         Quiz newQuiz = new Quiz();
-        newQuiz.setPersonId(person.getId());
+        newQuiz.setUsername(user.getUsername());
         newQuiz.setOrganizationId(org.getId());
         newQuiz.setLevel(1);
         newQuiz.setScore(8);
@@ -174,7 +173,7 @@ public class QuizControllerTest {
         newQuiz.setId(1L);
         String body = mapper.writeValueAsString(newQuiz);
 
-        given(personRepository.findOne(newQuiz.getPersonId())).willReturn(person);
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
         given(orgRepository.save(org)).willThrow(ObjectOptimisticLockingFailureException.class);
         mockMvc.perform(
@@ -189,18 +188,18 @@ public class QuizControllerTest {
     @Test
     public void getSubmitted() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
-        Person person = new Person();
-        person.setId(1L);
-        person.setNickname("u1");
-        principal.setDetails(person);
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
         Organization org = new Organization();
         org.setId(1L);
         org.setName("org");
         org.setTotalMembers(100);
 
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         Quiz newQuiz = new Quiz();
-        newQuiz.setPersonId(person.getId());
+        newQuiz.setUsername(user.getUsername());
         newQuiz.setOrganizationId(org.getId());
         newQuiz.setLevel(1);
         newQuiz.setScore(8);
@@ -208,18 +207,18 @@ public class QuizControllerTest {
         newQuiz.setCreated(today);
         newQuiz.setId(1L);
 
-        given(personRepository.findOne(newQuiz.getPersonId())).willReturn(person);
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
-        given(repository.findByPersonIdAndCreated(person.getId(), today)).willReturn(Arrays.asList(newQuiz));
-        mockMvc.perform(get("/quizzes/1"))
+        given(repository.findByUsernameAndCreated(user.getUsername(), today)).willReturn(Arrays.asList(newQuiz));
+        mockMvc.perform(get("/quizzes/u1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].person.id").value(1))
-                .andExpect(jsonPath("$[0].person.nickname").value("u1"))
+                .andExpect(jsonPath("$[0].user.username").value("u1"))
+                .andExpect(jsonPath("$[0].user.nickname").value("u1"))
                 .andExpect(jsonPath("$[0].organization").value("org"))
                 .andExpect(jsonPath("$[0].level").value(1))
                 .andExpect(jsonPath("$[0].score").value(8))
@@ -230,18 +229,18 @@ public class QuizControllerTest {
     @Test
     public void getBoardsAtEmpty() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
-        Person person = new Person();
-        person.setId(1L);
-        person.setNickname("u1");
-        principal.setDetails(person);
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
         Organization org = new Organization();
         org.setId(1L);
         org.setName("org");
         org.setTotalMembers(100);
 
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         Quiz newQuiz = new Quiz();
-        newQuiz.setPersonId(person.getId());
+        newQuiz.setUsername(user.getUsername());
         newQuiz.setOrganizationId(org.getId());
         newQuiz.setLevel(1);
         newQuiz.setScore(8);
@@ -262,16 +261,16 @@ public class QuizControllerTest {
         org.setId(1L);
         org.setName("org");
         org.setTotalMembers(100);
-        LocalDate today = LocalDate.now().atStartOfDay().toLocalDate();
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         List<Quiz> boards = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            Person person = new Person();
-            person.setId(new Long(i));
-            person.setNickname("u"+i);
-            given(personRepository.findOne(person.getId())).willReturn(person);
+            User user = new User();
+            user.setUsername("u"+i);
+            user.setNickname("u"+i);
+            given(userRepository.findOne(user.getUsername())).willReturn(user);
 
             Quiz newQuiz = new Quiz();
-            newQuiz.setPersonId(person.getId());
+            newQuiz.setUsername(user.getUsername());
             newQuiz.setOrganizationId(org.getId());
             newQuiz.setLevel(1);
             newQuiz.setScore(i+1);
@@ -298,10 +297,10 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(5))
                 .andExpect(jsonPath("$[0].id").value(9))
-                .andExpect(jsonPath("$[0].person.id").value(9))
+                .andExpect(jsonPath("$[0].user.username").value("u9"))
                 .andExpect(jsonPath("$[0].organization").value("org"))
                 .andExpect(jsonPath("$[4].id").value(5))
-                .andExpect(jsonPath("$[4].person.id").value(5))
+                .andExpect(jsonPath("$[4].user.username").value("u5"))
                 .andExpect(jsonPath("$[4].organization").value("org"));
     }
 

@@ -2,12 +2,13 @@ package net.cmlzw.nineteen.controller;
 
 import net.cmlzw.nineteen.domain.Award;
 import net.cmlzw.nineteen.domain.JobLock;
-import net.cmlzw.nineteen.domain.Person;
 import net.cmlzw.nineteen.domain.Quiz;
+import net.cmlzw.nineteen.domain.User;
 import net.cmlzw.nineteen.repository.AwardRepository;
 import net.cmlzw.nineteen.repository.JobLockRepository;
-import net.cmlzw.nineteen.repository.PersonRepository;
 import net.cmlzw.nineteen.repository.QuizRepository;
+import net.cmlzw.nineteen.repository.UserRepository;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,10 +19,11 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class AwardController {
     @Autowired
     QuizRepository quizRepository;
     @Autowired
-    PersonRepository personRepository;
+    UserRepository userRepository;
 
     @GetMapping
     public Slice<Award> list(@PageableDefault(20) Pageable pageable) {
@@ -47,15 +49,17 @@ public class AwardController {
         return repository.findAll(pr);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/queries/phone/{phone}")
-    public Award findByPhone(@PathVariable String phone) {
-        Award award = repository.findByPhone(phone);
-        if (award == null) {
+    public List<Award> findByPhone(@PathVariable String phone) {
+        List<Award> awards = repository.findByPhone(phone);
+        if (awards == null || awards.size() == 0) {
             throw new ResourceNotExistedException("award");
         }
-        return award;
+        return awards;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{id}")
     public Award claim(@PathVariable Long id) {
         Award award = repository.findOne(id);
@@ -75,6 +79,7 @@ public class AwardController {
         return award;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
     public Award edit(@PathVariable Long id, @RequestBody Award updated) {
         Award award = repository.findOne(id);
@@ -123,7 +128,8 @@ public class AwardController {
     }
 
     public void doCalculateAwards() {
-        LocalDate yesterday = LocalDate.now().atStartOfDay().toLocalDate().minusDays(1);
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        Date yesterday = DateUtils.addDays(today, -1);
         List<Award> awards = new ArrayList<>(15);
         for (int level = 1; level <= 3; level++) {
             List<Quiz> quizzes = quizRepository.findTop20ByLevelAndCreatedOrderByScoreDesc(level, yesterday);
@@ -133,7 +139,7 @@ public class AwardController {
             }
             for (int i = 0; i < count; i++) {
                 Award award = new Award();
-                award.setNickname(getNickname(quizzes.get(i).getPersonId()));
+                award.setNickname(getNickname(quizzes.get(i).getUsername()));
                 award.setGift(level);
                 award.setPhone(quizzes.get(i).getPhone());
                 award.setCreated(new Date());
@@ -143,14 +149,14 @@ public class AwardController {
         repository.save(awards);
     }
 
-    private String getNickname(Long personId) {
+    private String getNickname(String username) {
         try {
-            Person person = personRepository.findOne(personId);
-            if (person != null && person.getNickname() != null) {
-                return person.getNickname();
+            User user = userRepository.findOne(username);
+            if (user != null && user.getNickname() != null) {
+                return user.getNickname();
             }
         } catch (Exception e) {
-            logger.warn("Get nickname of uid " + personId.toString() + " failed", e);
+            logger.warn("Get nickname of username " + username + " failed", e);
         }
         return "";
     }

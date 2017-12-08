@@ -19,7 +19,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show_sql: true
     format_sql: true
   h2:
@@ -29,6 +29,11 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+  social:
+    wechat:
+      appid: your-app-id
+      appsecret: your-app-secret
+
 server:
   session:
     timeout: 600
@@ -39,7 +44,9 @@ server:
     remote-ip-header: X-Forwarded-For
   error:
     path: /e
-
+logging:
+  level:
+    org.springframework.social: DEBUG
 ---
 
 spring:
