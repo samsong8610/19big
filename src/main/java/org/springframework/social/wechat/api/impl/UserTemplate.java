@@ -1,6 +1,7 @@
 package org.springframework.social.wechat.api.impl;
 
 import org.springframework.social.wechat.api.UserOperations;
+import org.springframework.social.wechat.api.WeChatException;
 import org.springframework.social.wechat.api.WeChatUserProfile;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,7 +35,8 @@ public class UserTemplate implements UserOperations {
         if (openId != null) {
             builder.queryParam("openid", this.openId);
         }
-        return restTemplate.getForObject(builder.build().toUri(), WeChatUserProfile.class);
+        WeChatUserProfile profile = restTemplate.getForObject(builder.build().toUri(), WeChatUserProfile.class);
+        return profile;
     }
 
     private String snsUserInfoUrl() {

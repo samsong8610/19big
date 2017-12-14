@@ -1,10 +1,4 @@
-MERGE INTO AWARD (ID, NICKNAME, PHONE, GIFT, NOTIFIED, CREATED, CLAIMED)
-VALUES(1, 'Sam', '15800000000', 1, FALSE, '2017-12-02 00:18:00', FALSE),
-    (2, 'Sam', '15800000000', 2, FALSE, '2017-12-02 00:19:00', FALSE),
-    (3, 'Sam', '15800000000', 3, TRUE, '2017-12-02 01:19:00', FALSE),
-    (4, 'Song', '15800000001', 1, TRUE, '2017-12-02 01:19:00', TRUE);
-
-MERGE INTO ORGANIZATION (ID, NAME, SUBMITTED_MEMBERS, TOTAL_MEMBERS, VERSION)
+INSERT IGNORE INTO organization (id, name, submitted_members, total_members, version)
 VALUES(1, '金江镇党委', 0, 3788, 0),
     (2, '老城镇党委', 0, 1992, 0),
     (3, '大丰镇党委', 0, 678, 0),

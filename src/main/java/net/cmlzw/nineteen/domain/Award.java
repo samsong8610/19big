@@ -16,8 +16,9 @@ public class Award {
     @Column(nullable = false)
     Date created;
     boolean notified;
+    boolean claimed;
     @Version
-    Date claimed;
+    Long version;
 
     public Long getId() {
         return id;
@@ -67,11 +68,19 @@ public class Award {
         this.notified = notified;
     }
 
-    public Date getClaimed() {
+    public boolean isClaimed() {
         return claimed;
     }
 
-    public void setClaimed(Date claimed) {
+    public void setClaimed(boolean claimed) {
         this.claimed = claimed;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

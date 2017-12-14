@@ -30,16 +30,15 @@
             {{scope.row.notified ? '是' : '否'}}
           </template>
         </el-table-column>
-        <el-table-column prop="claimed" label="领奖日期">
+        <el-table-column prop="claimed" label="是否领奖">
           <template slot-scope="scope">
-            <!-- {{scope.row.claimed | safeMoment('YYYY-MM-DD HH:mm:ss')}} -->
-            {{scope.row.claimed | moment('YYYY-MM-DD HH:mm:ss')}}
+            {{scope.row.claimed ? '是' : '否'}}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button v-show="!scope.row.notified" @click="notify(scope.row, scope.$index)" type="text" size="small"><i class="el-icon-bell"></i>已通知</el-button>
-            <el-button v-show="scope.row.claimed === null" @click="claim(scope.row, scope.$index)" type="text" size="small"><i class="el-icon-circle-check"></i>已领取</el-button>
+            <el-button v-show="!scope.row.claimed" @click="claim(scope.row, scope.$index)" type="text" size="small"><i class="el-icon-circle-check"></i>已领取</el-button>
           </template>
         </el-table-column>
       </el-table>

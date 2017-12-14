@@ -102,4 +102,33 @@ public class QuizRepositoryTest {
         assertEquals("u1", actual.get(1).getUsername());
         assertEquals(4, actual.get(1).getScore());
     }
+
+    @Test
+    public void countDistinctUsernameByOrganizationId() throws Exception {
+        Quiz anotherXueba = new Quiz();
+        anotherXueba.setPhone("15800000001");
+        anotherXueba.setScore(1);
+        anotherXueba.setLevel(1);
+        anotherXueba.setUsername("u2");
+        anotherXueba.setOrganizationId(1L);
+        anotherXueba.setCreated(today);
+        entityManager.persist(anotherXueba);
+
+        int actual = repository.countDistinctUsernameByOrganizationId(1L);
+        assertEquals(1, actual);
+    }
+
+    @Test
+    public void countDistinctUsernameFromTwoDays() throws Exception {
+        Quiz qYesterday = new Quiz();
+        qYesterday.setPhone("15800000000");
+        qYesterday.setScore(1);
+        qYesterday.setLevel(1);
+        qYesterday.setUsername("u1");
+        qYesterday.setOrganizationId(1L);
+        qYesterday.setCreated(yesterday);
+        entityManager.persist(qYesterday);
+        int actual = repository.countDistinctUsernameByOrganizationId(1L);
+        assertEquals(2, actual);
+    }
 }

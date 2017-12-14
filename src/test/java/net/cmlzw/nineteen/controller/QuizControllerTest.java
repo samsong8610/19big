@@ -69,6 +69,7 @@ public class QuizControllerTest {
 
         given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
+        given(repository.countDistinctUsernameByOrganizationId(org.getId())).willReturn(1);
         mockMvc.perform(
                 post("/quizzes").contentType(MediaType.APPLICATION_JSON_UTF8).content(body)
                         .principal(principal)
@@ -175,6 +176,7 @@ public class QuizControllerTest {
 
         given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
         given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
+        given(repository.countDistinctUsernameByOrganizationId(org.getId())).willReturn(1);
         given(orgRepository.save(org)).willThrow(ObjectOptimisticLockingFailureException.class);
         mockMvc.perform(
                 post("/quizzes").contentType(MediaType.APPLICATION_JSON_UTF8).content(body)

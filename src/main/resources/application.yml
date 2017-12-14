@@ -6,6 +6,13 @@ spring:
   mvc:
     favicon:
       enabled: false
+  social:
+    wechat:
+      appid: your-app-id
+      appsecret: your-app-secret
+      mp:
+        appid: your-app-id
+        appsecret: your-app-secret
 ---
 
 spring:
@@ -29,10 +36,6 @@ spring:
       settings:
         trace: false
         web-allow-others: false
-  social:
-    wechat:
-      appid: your-app-id
-      appsecret: your-app-secret
 
 server:
   session:
@@ -82,8 +85,6 @@ spring:
     hibernate:
       ddl-auto: update
     show_sql: true
-  mail:
-    port: 587
 server:
   session:
     timeout: 900

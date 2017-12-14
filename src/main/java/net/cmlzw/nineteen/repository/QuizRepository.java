@@ -2,6 +2,8 @@ package net.cmlzw.nineteen.repository;
 
 import net.cmlzw.nineteen.domain.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -15,4 +17,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<Quiz> findByUsernameAndCreated(String username, Date today);
 
     List<Quiz> findTop20ByLevelAndCreatedOrderByScoreDesc(Integer level, Date today);
+
+    @Query("select count(distinct q.username) from Quiz q where q.organizationId = ?1")
+    int countDistinctUsernameByOrganizationId(Long orgId);
 }

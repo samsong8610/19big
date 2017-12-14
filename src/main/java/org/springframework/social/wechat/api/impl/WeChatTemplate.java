@@ -9,10 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.social.oauth2.AbstractOAuth2ApiBinding;
 import org.springframework.social.oauth2.TokenStrategy;
-import org.springframework.social.wechat.api.Gender;
-import org.springframework.social.wechat.api.UserOperations;
-import org.springframework.social.wechat.api.WeChat;
-import org.springframework.social.wechat.api.WeChatUserProfile;
+import org.springframework.social.wechat.api.*;
+import org.springframework.social.wechat.api.impl.json.WeChatModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,37 +53,6 @@ public class WeChatTemplate extends AbstractOAuth2ApiBinding implements WeChat {
         objectMapper.registerModule(createWeChatModule());
         converter.setObjectMapper(objectMapper);
         return converter;
-    }
-
-    private class WeChatModule extends SimpleModule {
-        public WeChatModule() {
-            super("WeChatModule");
-        }
-
-        @Override
-        public void setupModule(SetupContext context) {
-            context.setMixInAnnotations(WeChatUserProfile.class, WeChatUserProfileMixin.class);
-        }
-
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        abstract class WeChatUserProfileMixin {
-            @JsonProperty("sex")
-            Gender sex;
-            @JsonProperty("country")
-            String country;
-            @JsonProperty("province")
-            String province;
-            @JsonProperty("city")
-            String city;
-            @JsonProperty("privilege")
-            Set<String> privileges;
-
-            public WeChatUserProfileMixin(
-                    @JsonProperty("unionid") String unionId,
-                    @JsonProperty("openid") String openId,
-                    @JsonProperty("nickname") String nickname,
-                    @JsonProperty("headimgurl") String headImgUrl) {}
-        }
     }
 
     private Module createWeChatModule() {

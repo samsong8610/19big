@@ -15,10 +15,10 @@ create table if not exists UserConnection (userId varchar(255) not null,
 	secret varchar(512),
 	refreshToken varchar(512),
 	expireTime bigint,
-	primary key (userId, providerId, providerUserId));
-create unique index if not exists UserConnectionRank on UserConnection(userId, providerId, rank);
+	primary key (userId, providerId, providerUserId),
+	unique index UserConnectionRank (userId, providerId, rank));
 
-create table if not exists Award (id bigint auto_increment not null,
+create table if not exists award (id bigint auto_increment not null,
     nickname varchar(255),
     phone varchar(11) not null,
     gift tinyint,
@@ -28,34 +28,34 @@ create table if not exists Award (id bigint auto_increment not null,
     version bigint,
     primary key (id));
 
-create table if not exists Job_Lock (job varchar(16) not null,
-    created timestamp not null,
+create table if not exists job_lock (job varchar(16) not null,
+    created timestamp not null default current_timestamp,
     primary key (job));
 
-create table if not exists Organization (id bigint auto_increment,
+create table if not exists organization (id bigint auto_increment,
     name varchar(255) not null,
     total_members int,
     submitted_members int,
     version bigint,
     primary key (id));
 
-create table if not exists Question_Level (id bigint auto_increment not null,
+create table if not exists question_level (id bigint auto_increment not null,
     title varchar(255) not null,
     level tinyint,
     active boolean,
-    created timestamp not null,
+    created timestamp not null default current_timestamp,
     primary key (id));
 
-create table if not exists Question (id bigint auto_increment not null,
+create table if not exists question (id bigint auto_increment not null,
     title varchar(255) not null,
     answers varchar(255) not null,
     answer varchar(255) not null,
     question_level_id bigint,
     primary key (id),
     foreign key (question_level_id)
-        references Question_Level(id) on delete cascade on update cascade);
+        references question_level(id) on delete cascade on update cascade);
 
-create table if not exists Quiz (id bigint auto_increment not null,
+create table if not exists quiz (id bigint auto_increment not null,
     level tinyint,
     username varchar(255) not null,
     phone varchar(11) not null,
@@ -64,19 +64,19 @@ create table if not exists Quiz (id bigint auto_increment not null,
     created date not null,
     primary key (id));
 
-create table if not exists Users (username varchar(255) not null,
+create table if not exists users (username varchar(255) not null,
     password varchar(255) not null,
     enabled boolean,
     nickname varchar(255),
     primary key (username));
 
-create table if not exists Authorities (id bigint auto_increment not null,
+create table if not exists authorities (id bigint auto_increment not null,
     username varchar(255),
     authority varchar(255) not null,
     primary key (id),
-    foreign key (username) references Users);
+    foreign key (username) references users(username));
 
-create table if not exists Mp_Access_Token (id bigint auto_increment not null,
+create table if not exists mp_access_token (id bigint auto_increment not null,
     access_token varchar(512) not null,
     expires_in bigint,
     expires_at bigint,

@@ -131,7 +131,7 @@ public class AwardControllerTest {
         saved.setPhone(award.getPhone());
         saved.setGift(award.getGift());
         saved.setCreated(award.getCreated());
-        saved.setClaimed(new Date());
+        saved.setClaimed(true);
 
         given(repository.findOne(award.getId())).willReturn(award);
         given(repository.save(any(Award.class))).willReturn(saved);
@@ -155,7 +155,7 @@ public class AwardControllerTest {
         award.setPhone("15800000000");
         award.setGift(1);
         award.setCreated(new Date());
-        award.setClaimed(new Date());
+        award.setClaimed(true);
 
         given(repository.findOne(award.getId())).willReturn(award);
         mockMvc.perform(post("/awards/1"))

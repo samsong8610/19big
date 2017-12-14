@@ -16,8 +16,8 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-@Profile("dev")
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Profile({"prod", "qa"})
+public class ProductSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
 
@@ -40,11 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureForwardUrl("/login?param.error=bad_credentials")
                 .permitAll()
                 .and().authorizeRequests()
-                .antMatchers("/public/**", "/favicon.ico", "/console/**").permitAll()
+                .antMatchers("/public/**", "/favicon.ico").permitAll()
 //                .antMatchers("/19da.html").permitAll() // TODO: remove permitAll for 19da.html
                 .antMatchers("/**").authenticated()
                 .and().csrf().disable();
-        http.headers().frameOptions().sameOrigin();
         http.apply(new SpringSocialConfigurer());
     }
 }

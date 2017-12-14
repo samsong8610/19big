@@ -66,11 +66,11 @@ public class AwardController {
         if (award == null) {
             throw new ResourceNotExistedException("award");
         }
-        if (award.getClaimed() != null) {
+        if (award.isClaimed()) {
             throw new AlreadyClaimedException();
         }
         try {
-            award.setClaimed(new Date());
+            award.setClaimed(true);
             repository.save(award);
         } catch (OptimisticLockingFailureException e) {
             logger.warn("The award has been claimed.");
@@ -91,7 +91,8 @@ public class AwardController {
         return award;
     }
 
-    @Scheduled(cron = "00 00 * * * *")
+    // Everyday at midnight
+    @Scheduled(cron = "0 0 0 * * *")
     public void calculateAwards() {
         int retry = 0;
         JobLock found = null;
@@ -143,6 +144,8 @@ public class AwardController {
                 award.setGift(level);
                 award.setPhone(quizzes.get(i).getPhone());
                 award.setCreated(new Date());
+                award.setNotified(false);
+                award.setClaimed(false);
                 awards.add(award);
             }
         }

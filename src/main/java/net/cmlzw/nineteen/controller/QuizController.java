@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/quizzes")
@@ -35,6 +36,7 @@ public class QuizController {
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         Quiz found = repository.findByUsernameAndLevelAndCreated(username, quiz.getLevel(), today);
         if (found != null) {
+            logger.info(String.format("Username %s has submitted today", username));
             throw new AlreadySubmittedException();
         }
         quiz.setUsername(username);
@@ -44,7 +46,8 @@ public class QuizController {
             int retry = 0;
             do {
                 Organization org = orgRepository.findOne(quiz.getOrganizationId());
-                org.setSubmittedMembers(org.getSubmittedMembers() + 1);
+                int count = repository.countDistinctUsernameByOrganizationId(quiz.getOrganizationId());
+                org.setSubmittedMembers(count);
                 try {
                     orgRepository.save(org);
                     break;
@@ -72,6 +75,32 @@ public class QuizController {
             return result;
         }
         throw new ResourceNotExistedException("quiz");
+    }
+
+    @GetMapping("/{username}/{level}")
+    public QuizDto getSubmittedAtLevel(@PathVariable String username, @PathVariable int level) {
+        if (level < 1 || level > 3) {
+            throw new InvalidQuestionLevelException();
+        }
+
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        Quiz found = repository.findByUsernameAndLevelAndCreated(username, level, today);
+        if (found == null) {
+            throw new ResourceNotExistedException("quiz");
+        }
+        return valueFrom(found);
+    }
+
+    @GetMapping("/boards")
+    public List<List<QuizDto>> getBoards() {
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        List<List<QuizDto>> result = new ArrayList<>(3);
+        for (int i = 0; i < 3; i++) {
+            List<Quiz> quizzes = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(i + 1, today);
+            List<QuizDto> dtos = quizzes.stream().map(quiz -> valueFrom(quiz)).collect(Collectors.toList());
+            result.add(i, dtos);
+        }
+        return result;
     }
 
     @GetMapping("/boards/{level}")

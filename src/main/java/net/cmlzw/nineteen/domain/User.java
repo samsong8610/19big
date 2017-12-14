@@ -1,5 +1,7 @@
 package net.cmlzw.nineteen.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,9 +11,12 @@ import java.util.Set;
 public class User {
     @Id
     String username;
+    @JsonIgnore
     String password;
+    @JsonIgnore
     boolean enabled;
     String nickname;
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "username")
     Set<Authority> authorities;

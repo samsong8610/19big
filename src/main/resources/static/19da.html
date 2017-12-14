@@ -9,41 +9,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <script type="text/javascript" src="http://img.cankaoxiaoxi.com/js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
-	(function(){
-    	var getCookie = function(c_name)
-		{
-			if (document.cookie.length>0)
-			{
-				c_start=document.cookie.indexOf(c_name + "=")
-				if (c_start!=-1)
-				{ 
-					c_start=c_start + c_name.length+1;
-					c_end=document.cookie.indexOf(";",c_start);
-					if (c_end==-1) c_end=document.cookie.length;
-					return unescape(document.cookie.substring(c_start,c_end));
-				} 
-			}
-			return "";
-		};
-		var setCookie = function(c_name,value,seconds)
-		{
-			var exdate=new Date();		
-			exdate.setTime(exdate.getTime()+(seconds*1000)); 
-			document.cookie=c_name+ "=" +escape(value)+";path=/"+((seconds==null) ? "" : ";domain=cankaoxiaoxi.com;expires="+exdate.toGMTString());
-		};	
-		if((!getCookie("nickname"))||(!getCookie("openid"))){
-			// location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxffcf430ee87dea58&redirect_uri=http%3a%2f%2flocalhost%2fconnect%2fwechat&response_type=code&scope=snsapi_login";
-			location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxffcf430ee87dea58&redirect_uri=http%3a%2f%2flocalhost%2fconnect%2fwechat&response_type=code&scope=snsapi_login";
-		}else{
-			window.nickname = getCookie("nickname");
-			window.openid = getCookie("openid");
-		}
-		window.headimgurl = "http://upload.cankaoxiaoxi.com/2017/1103/1509691327248.jpg";
-		
-	// })();
-	});
+	(function () {
+		window.headimgurl = "http://image.cmlzw.net/19da/fenxiang-thumb.jpg"
+		$.get('/userinfo').done((data, status, xhr) => {
+			window.nickname = data.nickname
+			window.openid = data.openid
+			window.username = data.username
+		}).fail((err) => {
+			console.log(JSON.stringify(err))
+		})
+	})();
 
 </script>
 <style>
@@ -68,52 +45,80 @@ a:hover {text-decoration: none;}
 body>a {display:none;}
 .ov {overflow:hidden; zoom:1;}
 .wrap {width:100%; overflow:hidden; position:relative;font-family:"华文细黑";background-size: cover;}
-.box01 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; z-index:3; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_02.jpg) 0 0/100% 100% no-repeat;}
-.box01 .btn {position:absolute; bottom:0.7rem; width:3.8rem; left:50%; margin-left:-1.9rem; height:1.3rem; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_27.png) center center/auto auto no-repeat }
-.box01 .fingers {position:absolute; bottom:0.7rem; height:1.3rem; width: 6.8rem; left: 50%; margin-left: -3.4rem;}
+.box01 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; z-index:3; background:url(http://image.cmlzw.net/19da/1-bg.jpg) 0 0/100% 100% no-repeat;}
+.box01 .btn {position:absolute; bottom:0.5rem; width:3.8rem; left:50%; margin-left:-1.9rem; height:1.3rem; background:url(http://image.cmlzw.net/19da/1-button.png) center center/auto auto no-repeat }
+/* .box01 .fingers {position:absolute; bottom:0.7rem; height:1.3rem; width: 6.8rem; left: 50%; margin-left: -3.4rem;}
 .box01 .fingers .left {width:1.5rem; height:100%; float:left; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_24.png) 0 0/100%  no-repeat;}
-.box01 .fingers .right {width:1.5rem; float:right; height:100%; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_26.png) 0 0/100%  no-repeat;}
+.box01 .fingers .right {width:1.5rem; float:right; height:100%; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_26.png) 0 0/100%  no-repeat;} */
 
-.box05 {position:absolute; left:0; top:0; width:100%; height:100%; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/h5_04.jpg) 0 0/100% 100% no-repeat;}
-.box05 ul {margin: 3rem auto;}
-.box05 ul li {margin-bottom:0.6rem; text-align:center; height:0.9rem;}
-.box05 ul img {width:2.6rem;}
+.box05 {position:absolute; left:0; top:0; width:100%; height:100%; background:url(http://image.cmlzw.net/19da/2-bg.jpg) 0 0/100% 100% no-repeat;}
+.box05 ul {margin: 0.5rem auto;}
+.box05 ul li {margin-bottom:1rem; text-align:center; height:0.9rem;}
+.box05 ul img {width:50%;}
 
-.box02 {position:absolute; left:0; top:0; width:100%; height:100%; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_37.jpg) 0 0/100% 100% no-repeat;}
+.box02 {position:absolute; left:0; top:0; width:100%; height:100%; background:url(http://image.cmlzw.net/19da/3-bg.jpg) 0 0/100% 100% no-repeat;}
 .box02 .time {margin: 0.7rem auto; width: 90%; height:0.6rem; background:#fff; border-radius: 0.4rem; border: 3px solid rgb(240,184,97); line-height:0.6rem;}
 .box02 .time .remain {float:left; width:0%; height:0.48rem; background:#cd1100; line-height:0.48rem; text-indent:0.2rem; margin-top:3px; margin-left:5px; border-radius:10px; position:relative;}
 .box02 .time .remain>span {width:1.2rem; height:0.34rem; position:absolute; font-size:0.32rem; color:#fff;}
 .box02 .time .right {float:right; width:12%; color:rgb(198,13,18);}
 .box02 .time .jishi {position:absolute; top:-0.44rem; right:-0.7rem;}
-.box02 .time .jishi img {}
-.box02 .question {width:90%; margin:0.4rem auto; color:#fff;}
+/* .box02 .time .jishi img {} */
+.box02 .question {width:90%; margin:0.4rem auto; color:#fff; min-height: 2rem;}
 .box02 .flist {width:6.4rem; margin:0.4rem auto;}
-.box02 .flist ul li {position:relative; width:2.5rem; height:1.2rem; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/1_11.png) 0 0/100% 100% no-repeat; float:left; margin-bottom:0.4rem; padding:0.9rem 0.25rem; text-align:center; box-shadow: 0 0 0.2rem #888; transition: all 0.3s linear; transform-origin: 0 0; transform-style: preserve-3d; color:rgb(136,76,76); font-weight:bold;}
+.box02 .flist ul li {position:relative; width:2.5rem; height:1.2rem; background:url(http://image.cmlzw.net/19da/3-option-bg.png) 0 0/100% 100% no-repeat; float:left; margin-bottom:0.4rem; padding:0.9rem 0.25rem; text-align:center; box-shadow: 0 0 0.2rem #888; transition: all 0.3s linear; transform-origin: 0 0; transform-style: preserve-3d; color:rgb(136,76,76); font-weight:bold;}
 .box02 .flist ul li:nth-child(2n+1) {margin-right:0.4rem;}
-.box02 .flist ul li.cor {background-image:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/1_03.png); box-shadow:none;}
-.box02 .flist ul li .correct {position:absolute; width:100%; height:100%; top:0; left:0; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/dui.png) 0 0/100% 100% no-repeat; /*display:none; */transition: all 0.3s linear; transform-origin: 0 0; transform: rotateX(90deg) translateY(0px);}
-.box02 .flist ul li .error {position:absolute; width:100%; height:100%; top:0; left:0; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/cuo.png) 0 0/100% 100% no-repeat; /*display:none;*/ transition: all 0.3s linear; transform-origin: 0 0; transform: rotateX(90deg) translateY(0px);}
-.box02 .flist ul li .tip {margin-left: 110px; line-height: 38px; color: rgb(186,15,24); font-family: arial; font-weight: bold; opacity:0; transition:all 0.3s linear;}
+.box02 .flist ul li.cor {background-image:url(http://image.cmlzw.net/19da/3-option-right.png); box-shadow:none;}
+.box02 .flist ul li .correct {position:absolute; width:100%; height:100%; top:0; left:0; background:url(http://image.cmlzw.net/19da/3-dui.png) 0 0/100% 100% no-repeat; /*display:none; */transition: all 0.3s linear; transform-origin: 0 0; transform: rotateX(90deg) translateY(0px);}
+.box02 .flist ul li .error {position:absolute; width:100%; height:100%; top:0; left:0; background:url(http://image.cmlzw.net/19da/3-cuo.png) 0 0/100% 100% no-repeat; /*display:none;*/ transition: all 0.3s linear; transform-origin: 0 0; transform: rotateX(90deg) translateY(0px);}
+.box02 .flist ul li .tip {margin-left: 100px; line-height: 38px; color: rgb(186,15,24); font-family: arial; font-weight: bold; opacity:0; transition:all 0.3s linear;}
 
 .box03 {position:absolute; left:0; top:0; width:100%; height:100%;}
-.box03 .mask {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8);}
+.box03 .mask {position:absolute; left:0; top:0; width:100%; height:100%; background:url(http://image.cmlzw.net/19da/4-bg.jpg) 0 0/100% 100% no-repeat;}
 .box03 .mask2 {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none;}
-.box03 .tip {position:absolute; width:90%; height:10rem; left:5%; top:1.4rem; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_05_new.png) 0 0/100% no-repeat;}
-.box03 .tip>span {position:absolute; color:#fff; font-size:0.8rem; }
-.box03 .tip .percent {right:43%; top:0.05rem; font-family:arial; font-weight:bold;}
-.box03 .tip .honor {left:30%; top:1.1rem; font-size:0.6rem; font-weight:bold;}
-.box03 .tip .text {left:9%; top:3.6rem; text-align:center; width:79%; font-size:0.48rem; color:#000;}
-.box03 .buttons {position:absolute; bottom:1.8rem; width:40%; left:30%;}
-.box03 .buttons>div {margin-bottom:0.6rem; width:100%; height:1rem;}
-.box03 .again {background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/12.1_27.png) 0 0/100% no-repeat;}
-.box03 .fx {background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/12.1_40.png) 0 0/100% no-repeat;}
+.box03 .tip {position:absolute; width:90%; height:10rem; left:5%; top:2rem; background:url(http://image.cmlzw.net/19da/4-title.png) 0 0/100% no-repeat;}
+.box03 .tip>span {position:absolute; color:#ffba00; font-size:0.8rem; }
+.box03 .tip .percent {left:49%; top:3%; font-family:arial; font-weight:bold;}
+.box03 .tip .honor {left:31%; top:17%; font-size:0.6rem; font-weight:bold;}
+.box03 .tip .text {left:9%; top:70%; text-align:center; width:79%; font-size:0.48rem; font-weight: bold; color: black;}
+.box03 .buttons {position:absolute; bottom:2rem; width:80%; left:10%;}
+.box03 .buttons>div {margin-bottom:0.3rem; width:100%; height:1rem;}
+.box03 .buttons>div>span {display: inline-block; width: 50%; height: 1rem;}
+.box03 .again {background:url(http://image.cmlzw.net/19da/4-again.png) 0 0/100% no-repeat;}
+.box03 .fx {background:url(http://image.cmlzw.net/19da/4-fx.png) 0 0/100% no-repeat;}
+.box03 .qiandao {background:url(http://image.cmlzw.net/19da/4-qiandao.png) 0 0/100% no-repeat;}
+.box03 .qiandao.disabled {-webkit-filter: grayscale(100%) contrast(30%); -moz-filter: grayscale(100%) contrast(30%); -o-filter: grayscale(100%) contrast(30%); -ms-filter: grayscale(100%) contrast(30%); filter: grayscale(100%) contrast(30%);}
+.box03 .board {background:url(http://image.cmlzw.net/19da/4-board.png) 0 0/100% no-repeat;}
 .box03 .fxtips {position:absolute; top:0; right:0; width:3.6rem; height:2.1rem; display:none;}
 .box03 .fxtips img {width:100%; height:100%; }
-.box03 .copyright {position:absolute; bottom:0.8rem; color:#fff; opacity:0.7; width:100%;}
-.box03 .copyright p {text-align:center;}
+.box03 .copyright {position:absolute; bottom:0.3rem; color:#fff; opacity:0.7; width:100%;}
+.box03 .copyright p {text-align:center; display: none;}
+
+.box06 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; background:url(http://image.cmlzw.net/19da/5-bg.jpg) 0 0/100% 100% no-repeat;color: white; font-weight: bold;}
+.box06 form {margin: 2.5rem auto 0.5rem auto; width: 90%;}
+.box06 form label {display: block;}
+.box06 form span.phoneError {color: red;}
+.box06 form input {height: 1rem;}
+.box06 form select {height: 1rem;}
+.box06 .buttons {margin: 0 auto; width: 80%; text-align: center;}
+.box06 .buttons span {display: inline-block;}
+.box06 .buttons span img {width: 2rem;}
+
+.box07 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; background:url(http://image.cmlzw.net/19da/6-bg.jpg) 0 0/100% 100% no-repeat;color: black;}
+.box07 .roller {margin: 33% 0 0 10%; height: 53%; overflow: scroll;}
+.box07 .roller div {margin-bottom: 0.3rem;}
+.box07 .roller h3 {font-weight: bold;}
+.box07 .roller h3 img {height: 0.7rem;}
+.box07 .roller li {font-size: 80%;}
+.box07 .buttons {position: absolute; left: 17%; right: 3%; bottom: 0.2rem; width: 80%; text-align: right;}
+.box07 .buttons span {display: inline-block;}
+.box07 .buttons img {width: 2rem;}
+.box07 span.nickname {width: 70%; display: inline-block;}
+
+#message {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 10;}
+#message p {margin: 50% 0.5rem 0 0.5rem; color: white; font-weight: bold;}
 
 .test {position:absolute; width:100%; bottom:0.2rem; color:#000; font-size:0.28rem; z-index:100; display:none;}
-.music {position:absolute; width:0.6rem; height:0.6rem; top:0.2rem; right:0.2rem; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/music_start.png) 0 0/100% auto no-repeat; z-index:100;}
+.music {position:absolute; width:0.6rem; height:0.6rem; top:0.2rem; right:0.2rem; background:url(http://image.cmlzw.net/19da/music_start.png) 0 0/100% auto no-repeat; z-index:100;}
 </style>
 </head>
 
@@ -123,10 +128,10 @@ body>a {display:none;}
 <div class="wrap">
 	<!-- 开始页begin -->
 	<div class="box01" id="wbegin">
-		<div class="fingers">
+		<!-- <div class="fingers">
 			<div class="left"></div>
 			<div class="right"></div>
-		</div>
+		</div> -->
 		<div class="btn" id="start"></div>
 		
 	</div>
@@ -135,9 +140,9 @@ body>a {display:none;}
 	<!-- 选择页begin -->
 	<div class="box05" id="wbegin05" style="display:none;">
 		<ul>
-			<li id="start01"><img src="//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/xuemin.png" /></li>
-			<li id="start02"><img src="//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/xueba.png" /></li>
-			<li id="start03"><img src="//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/xueshen.png" /></li>
+			<li id="start01"><img src="http://image.cmlzw.net/19da/2-xuemin.png" /></li>
+			<li id="start02"><img src="http://image.cmlzw.net/19da/2-xueba.png" /></li>
+			<li id="start03"><img src="http://image.cmlzw.net/19da/2-xueshen.png" /></li>
 		</ul>
 	</div>
 	<!-- 选择页end -->
@@ -149,7 +154,7 @@ body>a {display:none;}
 		<div class="remain">
 		<span>倒计时</span>
 		<div class="jishi">
-			<img src="//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/jishi.png" >
+			<img src="http://image.cmlzw.net/19da/3-jishi.png" >
 		</div>
 		</div>
 		<div class="right">
@@ -172,46 +177,153 @@ body>a {display:none;}
   <!-- 游戏页end -->
   
 	<!-- 结果页begin -->
-	<div class="box03" id="wend"  style="display:none;">
+	<div class="box03" id="wend"  style="display: none;">
 		<div class="mask">
 		
 		</div>
-		<div class="tip"><span class="percent">0</span><span class="honor"></span><span class="text">小胜别松懈，么么哒！</span></div>
+		<div class="tip"><span class="percent">0</span><span class="honor">初级学民</span><span class="text">小胜别松懈，么么哒！</span></div>
 		
 		<div class="buttons">
-			<div class="again"></div>
+			<div><span class="again"></span><span class="fx"></span></div>
+			<div><span class="qiandao"></span><span class="board"></span></div>
+			<!-- <div class="again"></div>
 			<div class="fx"></div>
+			<div class="qiandao"></div>
+			<div class="board"></div> -->
 		</div>
 		<div class="mask2">
 		
 		</div>
-		<div class="fxtips"><img src="//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_04.png" /></div>
-		<div class="copyright"><p>中央网信办网络评论工作局指导</p><p>参考消息报社新媒体中心制作</p></div>
+		<div class="fxtips"><img src="http://image.cmlzw.net/19da/5-fxtips.png" /></div>
+		<div class="copyright"><p>中共澄迈县纪委制作</p></div>
 	</div>
 	<!-- 结果页end -->
+	<!-- 签到页begin -->
+	<div class="box06" id="qiandao" style="display: none;">
+		<form>
+			<label for="phone">手机：</label>
+			<input type="tel" name="phone" id="phone" placeholder="用于通知您领奖信息"><span id="phoneErr" class="phoneError"></span>
+			<label for="org">党组织：</label>
+			<select name="org" id="org">
+				<option value="" selected>群众</option>
+				<option value="1">金江镇党委</option>
+				<option value="2">老城镇党委</option>
+				<option value="3">大丰镇党委</option>
+				<option value="4">瑞溪镇党委</option>
+				<option value="5">永发镇党委</option>
+				<option value="6">加乐镇党委</option>
+				<option value="7">文儒镇党委</option>
+				<option value="8">中兴镇党委</option>
+				<option value="9">仁兴镇党委</option>
+				<option value="10">福山镇党委</option>
+				<option value="11">桥头镇党委</option>
+				<option value="12">金安筹备组党委</option>
+				<option value="13">县直属单位工委</option>
+				<option value="14">老城开发区工委</option>
+				<option value="15">金马物流工委、福山咖啡风情镇工委、琼台基地工委</option>
+				<option value="16">县农业局党委</option>
+				<option value="17">县财政局党委</option>
+				<option value="18">县人社局党委</option>
+				<option value="19">县教科局党委、澄迈中学党委</option>
+				<option value="20">县文体局党委</option>
+				<option value="21">县卫计委党委</option>
+				<option value="22">县公安局党委</option>
+				<option value="23">县住建系统党委</option>
+				<option value="24">县交通局党委</option>
+				<option value="25">县商务局党委</option>
+				<option value="26">县水务局党委</option>
+				<option value="27">县林业局党委</option>
+				<option value="28">县工商局党委</option>
+				<option value="29">县国税局党委</option>
+				<option value="30">县地税局党委</option>
+			</select>
+		</form>
+		<div class="buttons">
+			<span class="return"><img src="http://image.cmlzw.net/19da/5-return.png" alt="返回"></span>
+			<span class="submit"><img src="http://image.cmlzw.net/19da/5-submit.png" alt="提交"></span>
+		</div>
+	</div>
+	<!-- 签到页end -->
+	<!-- 排行榜begin -->
+	<div class="box07" id="board" style="display: none;">
+		<div class="roller">
+			<div>
+				<h3><img src="http://image.cmlzw.net/19da/6-xuemin.png" alt="学民榜单"></h3>
+				<ol id="xueminBoard">
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+				</ol>
+			</div>
+			<div>
+				<h3><img src="http://image.cmlzw.net/19da/6-xueba.png" alt="学霸榜单"></h3>
+				<ol id="xuebaBoard">
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+				</ol>
+			</div>
+			<div>
+				<h3><img src="http://image.cmlzw.net/19da/6-xueshen.png" alt="学神榜单"></h3>
+				<ol id="xueshenBoard">
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+				</ol>
+			</div>
+			<div>
+				<h3><img src="http://image.cmlzw.net/19da/6-zuzhi.png" alt="组织榜单"></h3>
+				<ol id="orgBoard">
+					<li><span class="nickname">金江镇党委</span><span class="score">80%</span></li>
+					<li><span>瑞溪镇党委</span><span>78%</span></li>
+					<li><span>县公安局党委</span><span>75%</span></li>
+				</ol>
+			</div>
+		</div>
+		<div class="buttons">
+			<span class="return"><img src="http://image.cmlzw.net/19da/5-return.png" alt="返回"></span>
+		</div>
+	</div>
+	<!-- 排行榜end -->
+
+	<div id="message" style="display: none;"><p></p></div>
 	<div class="music"></div>
 </div>
-<!-- <audio id="audioOver" src="http://upload.cankaoxiaoxi.com/2017/1103/1509675106276.mp3" preload="preload" onerror = "this.load();"></audio>
-<audio id="audioRight" src="http://upload.cankaoxiaoxi.com/2017/1102/1509608286648.mp3" preload="preload" onerror = "this.load();"></audio>
-<audio id="audioWrong" src="http://upload.cankaoxiaoxi.com/2017/1102/1509608286578.mp3" preload="preload" onerror = "this.load();"></audio>
-<audio id="audioPlay" src="http://upload.cankaoxiaoxi.com/2017/1103/1509675106643.mp3" preload="preload" onerror = "this.load();"></audio>
-<audio id="audioBg" src="http://upload.cankaoxiaoxi.com/2017/1106/1509933767683.mp3" loop="loop" preload="preload" onerror = "this.load();"></audio> -->
-<audio id="audioPlay" src="http://upload.cankaoxiaoxi.com/2017/1106/1509933767683.mp3" loop="loop" preload="preload"></audio>
-<audio id="audioBg" src="http://upload.cankaoxiaoxi.com/2017/1106/1509933767683.mp3" loop="loop" preload="preload"></audio>
+<audio id="audioOver" preload="preload">
+	<source src="http://image.cmlzw.net/19da/audio/over.mp3" type="audio/mpeg">
+	<source src="http://image.cmlzw.net/19da/audio/over.ogg" type="audio/ogg">
+</audio>
+<audio id="audioRight" preload="preload">
+	<source src="http://image.cmlzw.net/19da/audio/right.mp3" type="audio/mpeg">
+	<source src="http://image.cmlzw.net/19da/audio/right.ogg" type="audio/ogg">
+</audio>
+<audio id="audioWrong" preload="preload">
+	<source src="http://image.cmlzw.net/19da/audio/wrong.mp3" type="audio/mpeg">
+	<source src="http://image.cmlzw.net/19da/audio/wrong.ogg" type="audio/ogg">
+</audio>
+<audio id="audioPlay" preload="preload">
+	<source src="http://image.cmlzw.net/19da/audio/play.mp3" type="audio/mpeg">
+	<source src="http://image.cmlzw.net/19da/audio/play.ogg" type="audio/ogg">
+</audio>
+<audio id="audioBg" loop="loop" preload="preload">
+	<source src="http://image.cmlzw.net/19da/audio/bg.mp3" type="audio/mpeg">
+	<source src="http://image.cmlzw.net/19da/audio/bg.ogg" type="audio/ogg">
+</audio>
 
 <script>
 (function($){
 		(function(){
-			//document.getElementById("audioBg").play();
-			//document.getElementById("audioBg").volume = 0.3;
-			var oA = document.createElement("a");
-			oA.href = "#";
-			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217752" alt="count">';
-			document.body.appendChild(oA);
-			if(navigator.userAgent.match(/MicroMessenger/i)){
-				var weixinShareLogo = 'http://upload.cankaoxiaoxi.com/2017/1027/1509074165117.jpg';
-				$('body').prepend('<div style=" overflow:hidden; width:0px; height:0; margin:0 auto; position:absolute; top:-800px;"><img src="'+ weixinShareLogo +'"></div>')	
-			};
+			// var oA = document.createElement("a");
+			// oA.href = "#";
+			// oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217752" alt="count">';
+			// document.body.appendChild(oA);
+			// if(navigator.userAgent.match(/MicroMessenger/i)){
+			// 	var weixinShareLogo = 'http://upload.cankaoxiaoxi.com/2017/1027/1509074165117.jpg';
+			// 	$('body').prepend('<div style=" overflow:hidden; width:0px; height:0; margin:0 auto; position:absolute; top:-800px;"><img src="'+ weixinShareLogo +'"></div>')	
+			// };
 			var Dpr = 1, uAgent = window.navigator.userAgent;
 			var isIOS = uAgent.match(/iphone/i);
 			var isYIXIN = uAgent.match(/yixin/i);
@@ -279,6 +391,10 @@ body>a {display:none;}
 			this.rect = $('.rect');
 			this.again = $(".again");
 			this.fx = $(".fx");
+			this.qiandao = $(".qiandao");
+			this.board = $(".board");
+			this.qiandaoPage = $('#qiandao');
+			this.boardPage = $('#board');
 			this.timer = null;
 			this.music = null;
 			this.musicRotate = 0;
@@ -415,11 +531,38 @@ body>a {display:none;}
 								{"answer":"民营企业","question":"清理废除妨碍统一市场和公平竞争的各种规定，支持____发展，激发各类市场主体活力。","answers":["民营企业","外资企业","个人创业者"]},
 								{"answer":"教育强国","question":"建设____是中华民族伟大复兴的基础工程，必须放在优先位置。","answers":["美好环境","教育强国","公路铁路"]},
 								{"answer":"高度的文化自信","question":"没有____，没有文化的繁荣兴盛，就没有中华民族伟大复兴。","answers":["高度的文化自信","充分的文化传承","先进的文化理念"]}];
+			// load question levels from server
+			$.getJSON('/questionlevels', {active: true}).done(json => {
+				console.log('get /questionlevels success')
+				var l1, l2, l3;
+				json.forEach((v, i) => {
+					if (v.level == 1) {
+						l1 = i;
+					} else if (v.level == 2) {
+						l2 = i;
+					} else if (v.level == 3) {
+						l3 = i;
+					}
+				});
+				if (l1 && json[l1].questions) {
+					console.log('use level 1 questions');
+					this.firstQueue = json[l1].questions;
+				}
+				if (l2 && json[l2].questions) {
+					console.log('use level 2 questions');
+					this.secondQueue = json[l2].questions;
+				}
+				if (l3 && json[l3].questions) {
+					console.log('use level 3 questions');
+					this.thirdQueue = json[l3].questions;
+				}
+			});
 			this.start01.on('click', function(){
 				var that = this;
 				$(this).find("img").animate({"marginTop":"0.1rem"},300,function(){
 					$(that).find("img").animate({"marginTop":"0rem"},300);
 				});
+				_this.checkSubmitted(1);
 				setTimeout(function(){
 					_this.wbegin05.hide();
 					_this.content.show();
@@ -433,6 +576,7 @@ body>a {display:none;}
 				$(this).find("img").animate({"marginTop":"0.1rem"},300,function(){
 					$(that).find("img").animate({"marginTop":"0rem"},300);
 				});
+				_this.checkSubmitted(2);
 				setTimeout(function(){
 					_this.wbegin05.hide();
 					_this.content.show();
@@ -445,6 +589,7 @@ body>a {display:none;}
 				$(this).find("img").animate({"marginTop":"0.1rem"},300,function(){
 					$(that).find("img").animate({"marginTop":"0rem"},300);
 				});
+				_this.checkSubmitted(3);
 				setTimeout(function(){
 					_this.wbegin05.hide();
 					_this.content.show();
@@ -456,13 +601,13 @@ body>a {display:none;}
 			this.start.on('click', function(){
 				//document.getElementById("audioBg").volume = 0.3;
 				var that = this;
-				$(this).animate({"bottom":"0.6rem"},300,function(){
-					$(that).animate({"bottom":"0.7rem"},300);
+				$(this).animate({"bottom":"0.4rem"},300,function(){
+					$(that).animate({"bottom":"0.5rem"},300);
 				});
 				setTimeout(function(){
 					_this.wbegin.hide();
 					_this.wbegin05.show();
-					$(that).css({"bottom":"0.7rem"});
+					$(that).css({"bottom":"0.5rem"});
 				},600);
 				
 				if(_this.musicState){
@@ -481,15 +626,9 @@ body>a {display:none;}
 			  
 			});
 			this.again.on('click', function(){
-				
-				/*_this.endPage.hide();
-				_this.content.hide();
-				_this.wbegin05.show();
-				_this.several=1;
-				_this.init();*/
-				//console.log(_this.firstQueue);
-				//console.log(_this.timer);
 				_this.setCookie("several",1,10);
+				_this.wbegin05.show();
+				_this.endPage.hide();
 				window.location.reload();
 			});
 			this.fx.on('click', function(){
@@ -501,17 +640,39 @@ body>a {display:none;}
 					$(".fxtips").hide();
 				},5000);
 			});
+			this.qiandao.on('click', function() {
+				_this.qiandaoPage.show();
+				_this.endPage.hide();
+			});
+			this.board.on('click', function() {
+				_this.boardPage.show();
+				_this.endPage.hide();
+				_this.loadBoards();
+			});
+			$('.box06 .buttons .return').on('click', function() {
+				_this.endPage.show();
+				_this.qiandaoPage.hide();
+			});
+			$('.box06 .buttons .submit').on('click', _this.doQiandao());
+			$('.box07 .buttons .return').on('click', function(){
+				_this.endPage.show();
+				_this.boardPage.hide();
+			});
+			$('.box06 form #phone').on('change', (e) => {
+				var v = $('.box06 form #phone').val();
+				_this.validPhone(v);
+			});
 			$(".music").on('click',function(){
 				if(_this.musicState){
 					_this.musicState = 0;
 					clearInterval(_this.music);
 					
-					$(".music").css({"transform":"rotateX(0deg)", "background":"url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/music_stop.png) 0 0/100% auto no-repeat"});
+					$(".music").css({"transform":"rotateX(0deg)", "background":"url(http://image.cmlzw.net/19da/music_stop.png) 0 0/100% auto no-repeat"});
 					document.getElementById("audioBg").pause();
 				}else{
 					_this.musicState = 1;
 					//document.getElementById("audioBg").volume = 0.3;
-					$(".music").css({"background":"url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/music_start.png) 0 0/100% auto no-repeat"});
+					$(".music").css({"background":"url(http://image.cmlzw.net/19da/music_start.png) 0 0/100% auto no-repeat"});
 					_this.music = setInterval(function(){
 						_this.musicRotate++;
 						if(_this.musicRotate==360){
@@ -533,7 +694,7 @@ body>a {display:none;}
 					});
 				});
 				if(!_this.musicState){
-					$(".music").css({"background":"url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/music_stop.png) 0 0/100% auto no-repeat"});
+					$(".music").css({"background":"url(http://image.cmlzw.net/19da/music_stop.png) 0 0/100% auto no-repeat"});
 				}
 			},100);
 			//console.log(this.getCookie("several"));
@@ -541,7 +702,82 @@ body>a {display:none;}
 				this.wbegin.hide();
 				this.wbegin05.show();
 			}
-	
+
+		},
+		validPhone: function (v) {
+			v = v.trim();
+			if (!v.match(/^1\d{10}$/)) {
+				$('.box06 form #phoneErr').text('手机号无效');
+				return false;
+			} else {
+				$('.box06 form #phoneErr').text('');
+				return true;
+			}
+		},
+		doQiandao: function () {
+			var _this = this;
+			return () => {
+				var org = $('#qiandao form select').val() || undefined;
+				var phone = $('#qiandao form input').val();
+				if (!phone) {
+					_this.message('请您提供手机号，以便我们及时通知您得奖情况。')
+					return;
+				}
+				if (!_this.validPhone(phone)) {
+					return;
+				}
+				var quiz = {
+					level: _this.level,
+					username: window.username,
+					organizationId: org,
+					phone: phone,
+					score: _this.count
+				}
+				$.ajax({
+					type: 'POST',
+					url: '/quizzes',
+					data: JSON.stringify(quiz),
+					contentType: 'application/json;charset=utf8'
+				}).done((data, status) => {
+					_this.message('答题成绩提交成功，将按照该成绩确定您的排名以及得奖情况。')
+					$('.box06 .buttons .submit').off('click');
+					_this.qiandao.off('click');
+					$('.box03 .qiandao').addClass('disabled');
+					_this.endPage.show();
+					_this.qiandaoPage.hide();
+					window.submitted = true;
+				}).fail((xhr, status, error) => {
+					if (xhr.status === 400) {
+						console.log('User ' + window.username + ' has submitted today.');
+						_this.message('您今天这个级别已经签到了，挑战一下其他级别吧！');
+					} else {
+						console.log('post quizzes failed: ' + JSON.stringify({status: status, error: error}));
+						_this.message('啊呀，监考老师溜号了，请稍后再来提交试试。');
+					}
+				});
+			};
+		},
+		checkSubmitted: function (level) {
+			var _this = this;
+			// determine if user had submitted score
+			$.getJSON('/quizzes/' + window.username + '/' + level).done(json => {
+				console.log('user ' + window.username + ' has submitted quiz{id:' + json.id + ',level:' + json.level + '}');
+				$('.box06 .buttons .submit').off('click');
+				$('.box03 .buttons .qiandao').off('click');
+				$('.box03 .buttons .qiandao').addClass('disabled');
+			}).fail((xhr, status, error) => {
+				if (xhr.status === 404) {
+					$('.box03 .buttons .qiandao').removeClass('disabled');
+					$('.box03 .buttons .qiandao').unbind('click');
+					$('.box03 .buttons .qiandao').on('click', () => {
+						_this.qiandaoPage.show();
+						_this.endPage.hide();
+					});
+					$('.box06 .buttons .submit').unbind('click');
+					$('.box06 .buttons .submit').on('click', _this.doQiandao());
+					console.log('user ' + window.username + ' can submit score today');
+				}
+			});
 		},
 		getCookie: function(c_name)
 		{
@@ -562,7 +798,7 @@ body>a {display:none;}
 		{
 			var exdate=new Date();		
 			exdate.setTime(exdate.getTime()+(seconds*1000)); 
-			document.cookie=c_name+ "=" +escape(value)+";path=/"+((seconds==null) ? "" : ";domain=cankaoxiaoxi.com;expires="+exdate.toGMTString());
+			document.cookie=c_name+ "=" +escape(value)+";path=/"+((seconds==null) ? "" : ";domain=cmlzw.net;expires="+exdate.toGMTString());
 		},
 		gameInit: function(){
 			
@@ -651,7 +887,7 @@ body>a {display:none;}
 			$('#s_'+randpos).html(pepoleName); 
 			} 
 			this.isRight(pepoleName);
-			console.log(pepoleName);
+			// console.log(pepoleName);
 		},
 	 
 		mobileHeight: function(){
@@ -757,28 +993,44 @@ body>a {display:none;}
 				this.timer = null;
 				console.log("yes");
 			}
+
 			$(".box03 .tip").css({"width":0,"height":0,"left":"50%","top":"4rem"});
 			$(".box03 .tip .percent").hide();
 			$(".box03 .tip .honor").hide();
 			$(".box03 .tip .text").hide();
 			
 			$(".box03 .again").css({"marginLeft":"-6rem"});
-			$(".box03 .fx").css({"marginLeft":"6rem"});
+			// $(".box03 .fx").css({"marginLeft":"6rem"});
+			// $(".box03 .qiandao").css({"marginLeft":"-6rem"});
+			// $(".box03 .board").css({"marginLeft":"6rem"});
+			$(".box03 .qiandao").css({"marginLeft":"-6rem"});
 			this.endPage.show();
+			this.content.hide();
 			document.getElementById("audioBg").pause();
 			document.getElementById("audioOver").play();
-			$(".box03 .tip").animate({"width":'90%',"height":"6rem","left":"5%","top":"1.4rem"},500,function(){
+			$(".box03 .tip").animate({"width":'90%',"height":"10rem","left":"5%","top":"2rem"},500,function(){
+				// recalculate height to enable percentage layout
+				var w = $(".box03 .tip").width();
+				console.log('w: ' + w);
+				var iw = 395;
+				var ih = 272;
+				var h = ih * w / iw;
+				console.log('h: ' + h);
+				console.log('ratio: ' + w/iw);
+				$(".box03 .tip").height(h);
+
 				$(".box03 .tip .percent").show();
 				$(".box03 .tip .honor").show();
 				$(".box03 .tip .text").show();
-				$(".box03 .again").animate({"marginLeft":"0"},500,function(){
-					$(".box03 .fx").animate({"marginLeft":"0"},500);
-				});
+				$(".box03 .again").animate({"marginLeft": "0"}, 500);
+				$(".box03 .qiandao").animate({"marginLeft": "0"}, 500);
+				// $(".box03 .again").animate({"marginLeft":"0"},500,function(){
+				// 	$(".box03 .fx").animate({"marginLeft":"0"},500);
+				// });
+				// $(".box03 .qiandao").animate({"marginLeft":"0"},500,function(){
+				// 	$(".box03 .board").animate({"marginLeft":"0"},500);
+				// });
 			});
-			//this.content.hide();
-			//_this.weixinShare(true);
-
-			//if(this.count > 0){
 				
 			if(this.level==1){
 				this.userLevel = "学民";
@@ -815,124 +1067,145 @@ body>a {display:none;}
 				}else{
 					$(".box03 .tip .text").html("失败乃成功之母，依然看好你哟！");
 					this.userLevel = "初级"+this.userLevel;
-				}			
+				}
 			}
-			/*
-			var percent = this.count/this.finishQue*100-5+Math.floor(Math.random() * 11);
-			if(percent>99){
-				percent=99;
-			}else if(percent<0){
-				percent=0;
-			}
-			if(this.count==0){
-				percent=0;
-			}else if(this.count==this.finishQue){
-				percent=100;
-			}
-			*/
 			
 			$('.percent').html(this.count);
 			$('.honor').html(this.userLevel);
 			document.title = decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+this.userLevel+"称号！";
 			
-			var oA = document.createElement("a");
-			oA.href = "#";
-			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2028309" alt="count">';
-			document.body.appendChild(oA);
-			//发送结果
-			// $.get('http://app.cankaoxiaoxi.com/inner/19biganswer.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
-			wx.ready(function(){
+			// var oA = document.createElement("a");
+			// oA.href = "#";
+			// oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2028309" alt="count">';
+			// document.body.appendChild(oA);
+			// wx.ready(function(){
 
-				wx.showOptionMenu();
-				wx.onMenuShareTimeline({
-					title: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享标题
-					link: location.href.split("#")[0], // 分享链接
-					imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-					success: function () { 
-						//alert(111);// 用户确认分享后执行的回调函数
-						var oA = document.createElement("a");
-						oA.href = "#";
-						oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-						document.body.appendChild(oA);
-						$(".test").html(decodeURIComponent(window.headimgurl)+"|timeline2");
-						//分享结果
-						// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
-					},
-					cancel: function () { 
-					// 用户取消分享后执行的回调函数
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelT&level='+_this.level+'&score='+_this.count);
-					}
-				});
+			// 	wx.showOptionMenu();
+			// 	wx.onMenuShareTimeline({
+			// 		title: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享标题
+			// 		link: location.href.split("#")[0], // 分享链接
+			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+			// 		success: function () { 
+			// 			//alert(111);// 用户确认分享后执行的回调函数
+			// 			var oA = document.createElement("a");
+			// 			oA.href = "#";
+			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
+			// 			document.body.appendChild(oA);
+			// 			$(".test").html(decodeURIComponent(window.headimgurl)+"|timeline2");
+			// 		},
+			// 		cancel: function () { 
+			// 			// 用户取消分享后执行的回调函数
+			// 		}
+			// 	});
 				
-				wx.onMenuShareAppMessage({
-					title: "十九大知识你知道多少？快来试试看！", // 分享标题
-					desc: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享描述
-					link: location.href.split("#")[0], // 分享链接
-					imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-					type: '', // 分享类型,music、video或link，不填默认为link
-					dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-					success: function () { 
-						// 用户确认分享后执行的回调函数
-						var oA = document.createElement("a");
-						oA.href = "#";
-						oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-						document.body.appendChild(oA);
-						$(".test").html(decodeURIComponent(window.headimgurl)+"|Message2");
-						//分享结果
-						//$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
-					},
-					cancel: function () { 
-					// 用户取消分享后执行的回调函数
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelM&level='+_this.level+'&score='+_this.count);
-					}
-				});	
+			// 	wx.onMenuShareAppMessage({
+			// 		title: "十九大知识你知道多少？快来试试看！", // 分享标题
+			// 		desc: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享描述
+			// 		link: location.href.split("#")[0], // 分享链接
+			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+			// 		type: '', // 分享类型,music、video或link，不填默认为link
+			// 		dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+			// 		success: function () { 
+			// 			// 用户确认分享后执行的回调函数
+			// 			var oA = document.createElement("a");
+			// 			oA.href = "#";
+			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
+			// 			document.body.appendChild(oA);
+			// 			$(".test").html(decodeURIComponent(window.headimgurl)+"|Message2");
+			// 		},
+			// 		cancel: function () { 
+			// 			// 用户取消分享后执行的回调函数
+			// 		}
+			// 	});	
 
-				wx.onMenuShareQQ({
-					title: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享标题
-					desc: '快来参加十九大知识竞答吧！', // 分享描述
-					link: json.url, // 分享链接
-					imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-					success: function () { 
-						// 用户确认分享后执行的回调函数
-						var oA = document.createElement("a");
-						oA.href = "#";
-						oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-						document.body.appendChild(oA);
-						//分享结果
-						// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
-					},
-					cancel: function () { 
-					// 用户取消分享后执行的回调函数
-						//分享结果
-						// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
-					}
-				});
+			// 	wx.onMenuShareQQ({
+			// 		title: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享标题
+			// 		desc: '快来参加十九大知识竞答吧！', // 分享描述
+			// 		link: json.url, // 分享链接
+			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+			// 		success: function () { 
+			// 			// 用户确认分享后执行的回调函数
+			// 			var oA = document.createElement("a");
+			// 			oA.href = "#";
+			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
+			// 			document.body.appendChild(oA);
+			// 		},
+			// 		cancel: function () { 
+			// 			// 用户取消分享后执行的回调函数
+			// 		}
+			// 	});
 
-				wx.onMenuShareQZone({
-					title: "十九大知识你知道多少？快来试试看！", // 分享标题
-					desc: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享描述
-					link: json.url, // 分享链接
-					imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-					success: function () { 
-						// 用户确认分享后执行的回调函数
-						var oA = document.createElement("a");
-						oA.href = "#";
-						oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-						document.body.appendChild(oA);
-						//分享结果
-						// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
-					},
-					cancel: function () { 
-					// 用户取消分享后执行的回调函数
-						//分享结果
-						// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
-					}
-				});
+			// 	wx.onMenuShareQZone({
+			// 		title: "十九大知识你知道多少？快来试试看！", // 分享标题
+			// 		desc: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享描述
+			// 		link: json.url, // 分享链接
+			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+			// 		success: function () { 
+			// 			// 用户确认分享后执行的回调函数
+			// 			var oA = document.createElement("a");
+			// 			oA.href = "#";
+			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
+			// 			document.body.appendChild(oA);
+			// 		},
+			// 		cancel: function () { 
+			// 			// 用户取消分享后执行的回调函数
+			// 		}
+			// 	});
 					
-			});
+			// });
 	
+		},
+		loadBoards () {
+			var _this = this;
+			var appendBoardLine = function ($parent, board) {
+				$parent.empty();
+				board.forEach((v, i) => {
+					$parent.append('<li><span class="nickname">' + v.user.nickname + '</span><span class="score">' + v.score + '</span></li>');
+				});
+			};
+			$.getJSON('/quizzes/boards').done(json => {
+				if (json[0] && json[0].length > 0) {
+					appendBoardLine($('#xueminBoard'), json[0]);
+				} else {
+					$('#xueminBoard').empty();
+					$('#xueminBoard').append('<li><p>还没有人上榜，赶紧来抢沙发吧！</p></li>');
+				}
+
+				if (json[1] && json[1].length > 0) {
+					appendBoardLine($('#xuebaBoard'), json[1]);
+				} else {
+					$('#xuebaBoard').empty();
+					$('#xuebaBoard').append('<li><p>还没有人上榜，赶紧来抢沙发吧！</p></li>');
+				}
+
+				if (json[2] && json[2].length > 0) {
+					appendBoardLine($('#xueshenBoard'), json[2]);
+				} else {
+					$('#xueshenBoard').empty();
+					$('#xueshenBoard').append('<li><p>还没有人上榜，赶紧来抢沙发吧！</p></li>');
+				}
+			}).fail(() => {
+				_this.message('亲，榜单开小差了，麻烦您一会儿再来。');
+			});
+			$.getJSON('/organizations').done(json => {
+				$('#orgBoard').empty();
+				if (json) {
+					json.forEach((v, i) => {
+						$('#orgBoard').append('<li><span class="nickname">' + v.name + '</span><span class="score">' + (v.percent * 100).toFixed(2) + '%</span></li>')
+					})
+				} else {
+					$('#orgBoard').append('<li><p>啊奥，怎么没有组织榜单呢？</p></li>');
+				}
+			}).fail(() => {
+				_this.message('亲，榜单开小差了，麻烦您一会儿再来。')
+			});
+		},
+		message (msg) {
+			$('#message p').text(msg);
+			$('#message').show();
+			setInterval(() => {
+				$('#message').hide();
+			}, 2000);
 		}
 
 	};
@@ -941,10 +1214,12 @@ body>a {display:none;}
 		var url = location.href.split("#")[0];
 		url = url.replace("&","%26");
 		//$(".test").html(url);
-		$.getJSON('http://app.cankaoxiaoxi.com/?app=newspaper&controller=newspaper&action=jssdk&url='+url+'&jsoncallback=?',function(json){
+		// todo
+		$.getJSON('http://19da.cmlzw.net/jsapi/sign?url='+url,function(json){
+			console.log("sign " + url + " for jsapi: " + JSON.stringify(json))
 			if(json){
 				wx.config({
-					debug: false,
+					debug: true,
 					appId: json.appId,
 					timestamp: json.timestamp,
 					nonceStr: json.nonceStr,
@@ -978,13 +1253,13 @@ body>a {display:none;}
 						cancel: function () { 
 							// 用户取消分享后执行的回调函数
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelT&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelT&level='+_this.level+'&score='+_this.count);
 						}
 					});
 
 					wx.onMenuShareAppMessage({
 						title: document.title, // 分享标题
-						desc: '快来参加十九大知识竞答吧！', // 分享描述
+						desc: '快来参加十九大知识问答吧！', // 分享描述
 						link: json.url, // 分享链接
 						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
 						type: '', // 分享类型,music、video或link，不填默认为link
@@ -997,12 +1272,12 @@ body>a {display:none;}
 							document.body.appendChild(oA);
 							//$(".test").html(url+"|Message1");
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
 						},
 						cancel: function () { 
 						// 用户取消分享后执行的回调函数
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelM&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelM&level='+_this.level+'&score='+_this.count);
 						}
 					});
 					wx.onMenuShareQQ({
@@ -1017,12 +1292,12 @@ body>a {display:none;}
 							oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
 							document.body.appendChild(oA);
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
 						},
 						cancel: function () { 
 						// 用户取消分享后执行的回调函数
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
 						}
 					});
 
@@ -1038,12 +1313,12 @@ body>a {display:none;}
 							oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
 							document.body.appendChild(oA);
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
 						},
 						cancel: function () { 
 						// 用户取消分享后执行的回调函数
 							//分享结果
-							$.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
+							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
 						}
 					});
 				});

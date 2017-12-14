@@ -1,12 +1,14 @@
 package org.springframework.social.wechat.api;
 
+import org.springframework.social.connect.UserProfile;
+
 import java.io.Serializable;
 import java.util.Set;
 
-public class WeChatUserProfile implements Serializable {
+public class WeChatUserProfile extends UserProfile implements Serializable {
     public static final long serialVersionUID = 1L;
 
-//    private final String unionId;
+    //    private final String unionId;
 //    private final String openId;
     private String unionId;
     private String openId;
@@ -16,11 +18,11 @@ public class WeChatUserProfile implements Serializable {
     private String country;
     private String province;
     private String city;
+    private String language;
     private Set<String> privileges;
 
-    public WeChatUserProfile() {}
-
     public WeChatUserProfile(String unionId, String openId, String nickname, String headImgUrl) {
+        super(openId, nickname, "", "", "", "");
         this.unionId = unionId;
         this.openId = openId;
         this.nickname = nickname;
@@ -81,6 +83,22 @@ public class WeChatUserProfile implements Serializable {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public Set<String> getPrivileges() {
