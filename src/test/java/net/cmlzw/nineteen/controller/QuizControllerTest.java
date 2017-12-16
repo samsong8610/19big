@@ -8,6 +8,7 @@ import net.cmlzw.nineteen.repository.OrganizationRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import net.cmlzw.nineteen.repository.QuizRepository;
 import org.apache.commons.lang3.time.DateUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -121,6 +123,7 @@ public class QuizControllerTest {
     }
 
     @Test
+    @Ignore("allow submit many times")
     public void submitQuizMoreThanOnceFailed() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
         User user = new User();
@@ -188,6 +191,7 @@ public class QuizControllerTest {
     }
 
     @Test
+    @Ignore("allow submit many times")
     public void getSubmitted() throws Exception {
         UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
         User user = new User();
@@ -226,6 +230,79 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$[0].score").value(8))
                 .andExpect(jsonPath("$[0].phone").value("15800000000"))
                 .andExpect(jsonPath("$[0].created").exists());
+    }
+
+    @Test
+    public void getSubmittedAlways404() throws Exception {
+        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
+        Organization org = new Organization();
+        org.setId(1L);
+        org.setName("org");
+        org.setTotalMembers(100);
+
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        Quiz newQuiz = new Quiz();
+        newQuiz.setUsername(user.getUsername());
+        newQuiz.setOrganizationId(org.getId());
+        newQuiz.setLevel(1);
+        newQuiz.setScore(8);
+        newQuiz.setPhone("15800000000");
+        newQuiz.setCreated(today);
+        newQuiz.setId(1L);
+
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
+        given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
+        given(repository.findByUsernameAndCreated(user.getUsername(), today)).willReturn(Arrays.asList(newQuiz));
+        mockMvc.perform(get("/quizzes/u1"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateScore() throws Exception {
+        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("u1", "p1");
+        User user = new User();
+        user.setUsername("u1");
+        user.setNickname("u1");
+        principal.setDetails(user);
+        Organization org = new Organization();
+        org.setId(1L);
+        org.setName("org");
+        org.setTotalMembers(100);
+
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        Quiz newQuiz = new Quiz();
+        newQuiz.setUsername(user.getUsername());
+        newQuiz.setOrganizationId(org.getId());
+        newQuiz.setLevel(1);
+        newQuiz.setScore(8);
+        newQuiz.setPhone("15800000000");
+        newQuiz.setCreated(today);
+        newQuiz.setId(1L);
+
+        Quiz updatedQuiz = new Quiz();
+        updatedQuiz.setUsername(user.getUsername());
+        updatedQuiz.setOrganizationId(org.getId());
+        updatedQuiz.setLevel(1);
+        updatedQuiz.setScore(9);
+        updatedQuiz.setPhone("15800000000");
+        newQuiz.setId(1L);
+        String body = mapper.writeValueAsString(updatedQuiz);
+
+        given(userRepository.findOne(newQuiz.getUsername())).willReturn(user);
+        given(orgRepository.findOne(newQuiz.getOrganizationId())).willReturn(org);
+        given(repository.findOne(newQuiz.getId())).willReturn(newQuiz);
+        mockMvc.perform(put("/quizzes/{id}", newQuiz.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(body).principal(principal))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.score").value(9));
+
     }
 
     @Test
@@ -291,7 +368,9 @@ public class QuizControllerTest {
         }
 
         given(orgRepository.findOne(org.getId())).willReturn(org);
-        given(repository.findTop20ByLevelAndCreatedOrderByScoreDesc(1, today)).willReturn(boards);
+        // note: historical board
+//        given(repository.findTop20ByLevelOrderByScoreDesc(1, today)).willReturn(boards);
+        given(repository.findTop20ByLevelOrderByScoreDesc(1)).willReturn(boards);
         mockMvc.perform(get("/quizzes/boards/1").param("topn", "5"))
                 .andDo(print())
                 .andExpect(status().isOk())

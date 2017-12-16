@@ -42,6 +42,30 @@ public class AwardController {
     @Autowired
     UserRepository userRepository;
 
+    @PostMapping
+    public Slice<Award> present() {
+        // note: present awards to the top 20 quizzes of each level
+        List<Award> awards = new ArrayList<>(60);
+        for (int level = 0; level < 3; level++) {
+            List<Quiz> quizzes = quizRepository.findTop20ByLevelOrderByScoreDesc(level + 1);
+
+            for (int j = 0; j < quizzes.size(); level++) {
+                Award award = new Award();
+                award.setNickname(getNickname(quizzes.get(level).getUsername()));
+                award.setGift(level);
+                award.setPhone(quizzes.get(level).getPhone());
+                award.setCreated(new Date());
+                award.setNotified(false);
+                award.setClaimed(false);
+                awards.add(award);
+            }
+        }
+        repository.save(awards);
+        PageRequest pr = new PageRequest(0,
+                20, Sort.Direction.DESC, "created");
+        return list(pr);
+    }
+
     @GetMapping
     public Slice<Award> list(@PageableDefault(20) Pageable pageable) {
         PageRequest pr = new PageRequest(pageable.getPageNumber(),
@@ -92,7 +116,8 @@ public class AwardController {
     }
 
     // Everyday at midnight
-    @Scheduled(cron = "0 0 0 * * *")
+    // note: not automatically calculate awards
+//    @Scheduled(cron = "0 0 0 * * *")
     public void calculateAwards() {
         int retry = 0;
         JobLock found = null;

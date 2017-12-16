@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and().authorizeRequests()
                 .antMatchers("/public/**", "/favicon.ico", "/console/**").permitAll()
+                .antMatchers("/static/MP_verify_GX9TZYFwRrjCnD90.txt", "/MP_verify_GX9TZYFwRrjCnD90.txt").permitAll()
 //                .antMatchers("/19da.html").permitAll() // TODO: remove permitAll for 19da.html
                 .antMatchers("/**").authenticated()
                 .and().csrf().disable();

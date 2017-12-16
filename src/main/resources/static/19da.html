@@ -46,7 +46,8 @@ body>a {display:none;}
 .ov {overflow:hidden; zoom:1;}
 .wrap {width:100%; overflow:hidden; position:relative;font-family:"华文细黑";background-size: cover;}
 .box01 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; z-index:3; background:url(http://image.cmlzw.net/19da/1-bg.jpg) 0 0/100% 100% no-repeat;}
-.box01 .btn {position:absolute; bottom:0.5rem; width:3.8rem; left:50%; margin-left:-1.9rem; height:1.3rem; background:url(http://image.cmlzw.net/19da/1-button.png) center center/auto auto no-repeat }
+.box01 .btn {position:absolute; bottom:0.5rem; width:3.8rem; left:40%; margin-left:-1.9rem; height:1.3rem; background:url(http://image.cmlzw.net/19da/1-button.png) center center/auto auto no-repeat }
+.box01 .checkBoard {position:absolute; bottom:0.6rem; width:1rem; height:1rem; left:auto; right: 10%; background:url(http://image.cmlzw.net/19da/1-board.png) 0 0/100% 100% no-repeat }
 /* .box01 .fingers {position:absolute; bottom:0.7rem; height:1.3rem; width: 6.8rem; left: 50%; margin-left: -3.4rem;}
 .box01 .fingers .left {width:1.5rem; height:100%; float:left; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_24.png) 0 0/100%  no-repeat;}
 .box01 .fingers .right {width:1.5rem; float:right; height:100%; background:url(//img.cankaoxiaoxi.com/templates/cankaoxiaoxi/images/19big/2.1_26.png) 0 0/100%  no-repeat;} */
@@ -79,7 +80,7 @@ body>a {display:none;}
 .box03 .tip>span {position:absolute; color:#ffba00; font-size:0.8rem; }
 .box03 .tip .percent {left:49%; top:3%; font-family:arial; font-weight:bold;}
 .box03 .tip .honor {left:31%; top:17%; font-size:0.6rem; font-weight:bold;}
-.box03 .tip .text {left:9%; top:70%; text-align:center; width:79%; font-size:0.48rem; font-weight: bold; color: black;}
+.box03 .tip .text {left:9%; top:65%; text-align:center; width:79%; font-size:0.48rem; font-weight: bold; color: black;}
 .box03 .buttons {position:absolute; bottom:2rem; width:80%; left:10%;}
 .box03 .buttons>div {margin-bottom:0.3rem; width:100%; height:1rem;}
 .box03 .buttons>div>span {display: inline-block; width: 50%; height: 1rem;}
@@ -103,16 +104,27 @@ body>a {display:none;}
 .box06 .buttons span {display: inline-block;}
 .box06 .buttons span img {width: 2rem;}
 
-.box07 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; background:url(http://image.cmlzw.net/19da/6-bg.jpg) 0 0/100% 100% no-repeat;color: black;}
-.box07 .roller {margin: 33% 0 0 10%; height: 53%; overflow: scroll;}
-.box07 .roller div {margin-bottom: 0.3rem;}
+.box07 { background-size:100% auto; height:100%; width:100%; position:absolute; left:0; top:0; background:url(http://image.cmlzw.net/19da/6-bg1.jpg) 0 0/100% 100% no-repeat;color: black;}
+.box07 span {display: inline-block;}
+.box07.zuzhi {background-image: url(http://image.cmlzw.net/19da/6-bg-zuzhi1.jpg);}
+#tabSwitch {margin: 30% 10% 0 10%; height: 6%;}
+#tabSwitch span {width: 50%; height: 100%;}
+.box07 .roller {margin-top: 5%; margin-left: 2%; height: 54%; overflow: scroll;}
+.box07 .roller div {position: relative; width: 33%; float: left;}
 .box07 .roller h3 {font-weight: bold;}
 .box07 .roller h3 img {height: 0.7rem;}
-.box07 .roller li {font-size: 80%;}
+.box07 ol {list-style: none;}
+.box07 li {font-size: 70%;}
+.box07 .roller li {text-align: center;}
+.box07 .roller ol li span {display: inline;}
+.box07 .roller span.nickname {width: 80%;}
+.box07 .roller span.score {width: 20%;}
 .box07 .buttons {position: absolute; left: 17%; right: 3%; bottom: 0.2rem; width: 80%; text-align: right;}
-.box07 .buttons span {display: inline-block;}
 .box07 .buttons img {width: 2rem;}
-.box07 span.nickname {width: 70%; display: inline-block;}
+.box07 .orgRoller {margin-top: 5%; margin-left: 15%; height: 63%; overflow: scroll;}
+.box07 .orgRoller .seq {width: 10%;}
+.box07 .orgRoller .nickname {width: 60%;}
+.box07 .orgRoller .score {width: 30%;}
 
 #message {position:absolute; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index: 10;}
 #message p {margin: 50% 0.5rem 0 0.5rem; color: white; font-weight: bold;}
@@ -133,6 +145,7 @@ body>a {display:none;}
 			<div class="right"></div>
 		</div> -->
 		<div class="btn" id="start"></div>
+		<div class="checkBoard" id="checkBoard"></div>
 		
 	</div>
 	<!-- 开始页end -->
@@ -246,42 +259,42 @@ body>a {display:none;}
 	<!-- 签到页end -->
 	<!-- 排行榜begin -->
 	<div class="box07" id="board" style="display: none;">
+		<div id="tabSwitch"><span id="geren"></span><span id="zuzhi"></span></div>
 		<div class="roller">
 			<div>
-				<h3><img src="http://image.cmlzw.net/19da/6-xuemin.png" alt="学民榜单"></h3>
+				<!-- <h3><img src="http://image.cmlzw.net/19da/6-xuemin.png" alt="学民榜单"></h3> -->
 				<ol id="xueminBoard">
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<!-- <li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">不要让我想名字</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li> -->
 				</ol>
 			</div>
 			<div>
-				<h3><img src="http://image.cmlzw.net/19da/6-xueba.png" alt="学霸榜单"></h3>
+				<!-- <h3><img src="http://image.cmlzw.net/19da/6-xueba.png" alt="学霸榜单"></h3> -->
 				<ol id="xuebaBoard">
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<!-- <li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li> -->
 				</ol>
 			</div>
 			<div>
-				<h3><img src="http://image.cmlzw.net/19da/6-xueshen.png" alt="学神榜单"></h3>
+				<!-- <h3><img src="http://image.cmlzw.net/19da/6-xueshen.png" alt="学神榜单"></h3> -->
 				<ol id="xueshenBoard">
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
-					<li><span class="nickname">宋晓光(sam)</span><span class="score">9</span></li>
+					<!-- <li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li>
+					<li><span class="nickname">宋晓光(sam)</span><span class="score">(9)</span></li> -->
 				</ol>
 			</div>
-			<div>
-				<h3><img src="http://image.cmlzw.net/19da/6-zuzhi.png" alt="组织榜单"></h3>
-				<ol id="orgBoard">
-					<li><span class="nickname">金江镇党委</span><span class="score">80%</span></li>
-					<li><span>瑞溪镇党委</span><span>78%</span></li>
-					<li><span>县公安局党委</span><span>75%</span></li>
-				</ol>
-			</div>
+		</div>
+		<div class="orgRoller" style="display: none;">
+			<ol id="orgBoard">
+				<!-- <li><span class="seq">1</span><span class="nickname">金江镇党委</span><span class="score">80%</span></li>
+				<li><span class="seq">2</span><span class="nickname">瑞溪镇党委</span><span class="score">78%</span></li>
+				<li><span class="seq">3</span><span class="nickname">县公安局党委</span><span class="score">75%</span></li> -->
+			</ol>
 		</div>
 		<div class="buttons">
 			<span class="return"><img src="http://image.cmlzw.net/19da/5-return.png" alt="返回"></span>
@@ -378,6 +391,7 @@ body>a {display:none;}
 		init: function(){
 			var _this = this;
 			this.start = $("#start");
+			this.checkBoard = $('#checkBoard');
 			this.userLevel = '';
 			this.start01 = $("#start01");
 			this.start02 = $("#start02");
@@ -412,7 +426,7 @@ body>a {display:none;}
 			this.firstQueue = [{"answer":"牢记使命","question":"十九大主题是：不忘初心，_____。","answers":["砥砺前行","牢记使命","继续前进"]},
 							{"answer":"中高速","question":"我国经济已经进入_____增长期。","answers":["中高速","超速","稳定"]},
 							{"answer":"主战","question":"军队改革形成军委管总，战区_____，军种主建新格局。","answers":["配合","宣战","主战"]},
-							{"answer":"管治权","question":"中央拥有对香港、澳门的全面_____。","answers":["管制权","保护权","执法权"]},
+							{"answer":"管治权","question":"中央拥有对香港、澳门的全面_____。","answers":["管治权","保护权","执法权"]},
 							{"answer":"八","question":"中央出台_____项规定，严整形式主义、官僚主义、享乐主义和奢靡之风。","answers":["五","七","八"]},
 							{"answer":"强起来","question":"中华民族迎来了从站起来、富起来到_____的飞跃。","answers":["强起来","世界第一","走出去"]},
 							{"answer":"新时代","question":"中国特色社会主义进入_____。","answers":["新时代","新征程","下半场"]},
@@ -531,10 +545,12 @@ body>a {display:none;}
 								{"answer":"民营企业","question":"清理废除妨碍统一市场和公平竞争的各种规定，支持____发展，激发各类市场主体活力。","answers":["民营企业","外资企业","个人创业者"]},
 								{"answer":"教育强国","question":"建设____是中华民族伟大复兴的基础工程，必须放在优先位置。","answers":["美好环境","教育强国","公路铁路"]},
 								{"answer":"高度的文化自信","question":"没有____，没有文化的繁荣兴盛，就没有中华民族伟大复兴。","answers":["高度的文化自信","充分的文化传承","先进的文化理念"]}];
+			this.quiz = null; // current best quiz record
+			this.isCheckBoard = false;
 			// load question levels from server
 			$.getJSON('/questionlevels', {active: true}).done(json => {
 				console.log('get /questionlevels success')
-				var l1, l2, l3;
+				var l1 = -1, l2 = -1, l3 = -1;
 				json.forEach((v, i) => {
 					if (v.level == 1) {
 						l1 = i;
@@ -544,15 +560,15 @@ body>a {display:none;}
 						l3 = i;
 					}
 				});
-				if (l1 && json[l1].questions) {
+				if (l1 !== -1 && json[l1].questions.length > 0) {
 					console.log('use level 1 questions');
 					this.firstQueue = json[l1].questions;
 				}
-				if (l2 && json[l2].questions) {
+				if (l2 !== -1 && json[l2].questions.length > 0) {
 					console.log('use level 2 questions');
 					this.secondQueue = json[l2].questions;
 				}
-				if (l3 && json[l3].questions) {
+				if (l3 !== -1 && json[l3].questions.length > 0) {
 					console.log('use level 3 questions');
 					this.thirdQueue = json[l3].questions;
 				}
@@ -567,6 +583,7 @@ body>a {display:none;}
 					_this.wbegin05.hide();
 					_this.content.show();
 					_this.level = 1;
+					_this.count = 0;
 					_this.gameInit(_this.level);
 				},600);
 			 
@@ -581,6 +598,7 @@ body>a {display:none;}
 					_this.wbegin05.hide();
 					_this.content.show();
 					_this.level = 2;
+					_this.count = 0;
 					_this.gameInit(_this.level);
 				},600);
 			});
@@ -594,6 +612,7 @@ body>a {display:none;}
 					_this.wbegin05.hide();
 					_this.content.show();
 					_this.level = 3;
+					_this.count = 0;
 					_this.gameInit(_this.level);
 				},600);
 			});
@@ -625,7 +644,22 @@ body>a {display:none;}
 				console.log(_this.musicState);
 			  
 			});
+			this.checkBoard.on('click', function () {
+				var that = this;
+				$(this).animate({"bottom": "0.4rem"}, 300, function () {
+					$(that).animate({"bottom": "0.5rem"}, 300);
+				});
+				_this.isCheckBoard = true;
+				setTimeout(function() {
+					_this.boardPage.show();
+					_this.wbegin.hide();
+					_this.loadBoards();
+					$(that).css({"bottom": "0.5rem"});
+				}, 600);
+			});
 			this.again.on('click', function(){
+				_this.count = 0;
+				_this.userLevel = '';
 				_this.setCookie("several",1,10);
 				_this.wbegin05.show();
 				_this.endPage.hide();
@@ -641,10 +675,15 @@ body>a {display:none;}
 				},5000);
 			});
 			this.qiandao.on('click', function() {
+				if (_this.quiz && _this.quiz.score >= _this.count) {
+					_this.message('很遗憾，这次挑战没有超越自己的最好成绩'+ _this.quiz.score + '个，继续加油吧！');
+					return;
+				}
 				_this.qiandaoPage.show();
 				_this.endPage.hide();
 			});
 			this.board.on('click', function() {
+				_this.isCheckBoard = false;
 				_this.boardPage.show();
 				_this.endPage.hide();
 				_this.loadBoards();
@@ -655,8 +694,22 @@ body>a {display:none;}
 			});
 			$('.box06 .buttons .submit').on('click', _this.doQiandao());
 			$('.box07 .buttons .return').on('click', function(){
-				_this.endPage.show();
+				if (_this.isCheckBoard) {
+					_this.wbegin.show();
+				} else {
+					_this.endPage.show();
+				}
 				_this.boardPage.hide();
+			});
+			$('.box07 #geren').on('click', function () {
+				$('.box07 .roller').show();
+				$('.box07 .orgRoller').hide();
+				_this.boardPage.removeClass('zuzhi');
+			});
+			$('.box07 #zuzhi').on('click', function () {
+				$('.box07 .orgRoller').show();
+				$('.box07 .roller').hide();
+				_this.boardPage.addClass('zuzhi');
 			});
 			$('.box06 form #phone').on('change', (e) => {
 				var v = $('.box06 form #phone').val();
@@ -733,16 +786,32 @@ body>a {display:none;}
 					phone: phone,
 					score: _this.count
 				}
+				if (_this.quiz) {
+					// only update score
+					if (quiz.score > _this.quiz.score) {
+						$.ajax({
+							type: 'PUT',
+							url: '/quizzes/' + _this.quiz.id,
+							data: JSON.stringify(quiz),
+							contentType: 'application/json;charset=utf8'
+						}).done((data, status) => {
+							_this.message('成功更新答题成绩，随时等候您来提交自己的更好成绩奥。')
+						});
+					}
+					return;
+				}
+				// submit a new quiz
 				$.ajax({
 					type: 'POST',
 					url: '/quizzes',
 					data: JSON.stringify(quiz),
 					contentType: 'application/json;charset=utf8'
 				}).done((data, status) => {
-					_this.message('答题成绩提交成功，将按照该成绩确定您的排名以及得奖情况。')
-					$('.box06 .buttons .submit').off('click');
-					_this.qiandao.off('click');
-					$('.box03 .qiandao').addClass('disabled');
+					_this.message('答题成绩提交成功，随时等候您来提交自己的更好成绩奥。')
+					// note: always allow submit many times
+					// $('.box06 .buttons .submit').off('click');
+					// _this.qiandao.off('click');
+					// $('.box03 .qiandao').addClass('disabled');
 					_this.endPage.show();
 					_this.qiandaoPage.hide();
 					window.submitted = true;
@@ -758,26 +827,35 @@ body>a {display:none;}
 			};
 		},
 		checkSubmitted: function (level) {
+			// note: always allow submit many times only when the new score is better
 			var _this = this;
-			// determine if user had submitted score
 			$.getJSON('/quizzes/' + window.username + '/' + level).done(json => {
-				console.log('user ' + window.username + ' has submitted quiz{id:' + json.id + ',level:' + json.level + '}');
-				$('.box06 .buttons .submit').off('click');
-				$('.box03 .buttons .qiandao').off('click');
-				$('.box03 .buttons .qiandao').addClass('disabled');
+				console.log('user ' + window.username + ' has a quiz at level ' + level + ', score: ' + json.score);
+				_this.quiz = json;
 			}).fail((xhr, status, error) => {
-				if (xhr.status === 404) {
-					$('.box03 .buttons .qiandao').removeClass('disabled');
-					$('.box03 .buttons .qiandao').unbind('click');
-					$('.box03 .buttons .qiandao').on('click', () => {
-						_this.qiandaoPage.show();
-						_this.endPage.hide();
-					});
-					$('.box06 .buttons .submit').unbind('click');
-					$('.box06 .buttons .submit').on('click', _this.doQiandao());
-					console.log('user ' + window.username + ' can submit score today');
-				}
+				console.log('get the best quiz at level ' + level + ' failed: ' + status);
+				_this.quiz = null;
 			});
+			// var _this = this;
+			// // determine if user had submitted score
+			// $.getJSON('/quizzes/' + window.username + '/' + level).done(json => {
+			// 	console.log('user ' + window.username + ' has submitted quiz{id:' + json.id + ',level:' + json.level + '}');
+			// 	$('.box06 .buttons .submit').off('click');
+			// 	$('.box03 .buttons .qiandao').off('click');
+			// 	$('.box03 .buttons .qiandao').addClass('disabled');
+			// }).fail((xhr, status, error) => {
+			// 	if (xhr.status === 404) {
+			// 		$('.box03 .buttons .qiandao').removeClass('disabled');
+			// 		$('.box03 .buttons .qiandao').unbind('click');
+			// 		$('.box03 .buttons .qiandao').on('click', () => {
+			// 			_this.qiandaoPage.show();
+			// 			_this.endPage.hide();
+			// 		});
+			// 		$('.box06 .buttons .submit').unbind('click');
+			// 		$('.box06 .buttons .submit').on('click', _this.doQiandao());
+			// 		console.log('user ' + window.username + ' can submit score today');
+			// 	}
+			// });
 		},
 		getCookie: function(c_name)
 		{
@@ -1023,7 +1101,23 @@ body>a {display:none;}
 				$(".box03 .tip .honor").show();
 				$(".box03 .tip .text").show();
 				$(".box03 .again").animate({"marginLeft": "0"}, 500);
-				$(".box03 .qiandao").animate({"marginLeft": "0"}, 500);
+				$(".box03 .qiandao").animate({"marginLeft": "0"}, 500,function() {
+					var step = function(now) {
+						$(".box03 .buttons .qiandao").css({
+							transform: 'rotate(' + now + 'deg)'
+						});
+					};
+					$({deg: 0}).animate({deg: 10}, {
+						duration: 200,
+						step: step
+					}).animate({deg: -10}, {
+						duration: 400,
+						step: step
+					}).animate({deg: 0}, {
+						duration: 200,
+						step: step
+					});
+				});
 				// $(".box03 .again").animate({"marginLeft":"0"},500,function(){
 				// 	$(".box03 .fx").animate({"marginLeft":"0"},500);
 				// });
@@ -1055,7 +1149,7 @@ body>a {display:none;}
 				}else{
 					$(".box03 .tip .text").html("别怕失败，有胆再来！");
 					this.userLevel = "初级"+this.userLevel;
-				}			
+				}
 			}else if(this.level==3){
 				this.userLevel = "学神";
 				if(this.count>=9){
@@ -1073,94 +1167,13 @@ body>a {display:none;}
 			$('.percent').html(this.count);
 			$('.honor').html(this.userLevel);
 			document.title = decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+this.userLevel+"称号！";
-			
-			// var oA = document.createElement("a");
-			// oA.href = "#";
-			// oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2028309" alt="count">';
-			// document.body.appendChild(oA);
-			// wx.ready(function(){
-
-			// 	wx.showOptionMenu();
-			// 	wx.onMenuShareTimeline({
-			// 		title: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享标题
-			// 		link: location.href.split("#")[0], // 分享链接
-			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-			// 		success: function () { 
-			// 			//alert(111);// 用户确认分享后执行的回调函数
-			// 			var oA = document.createElement("a");
-			// 			oA.href = "#";
-			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-			// 			document.body.appendChild(oA);
-			// 			$(".test").html(decodeURIComponent(window.headimgurl)+"|timeline2");
-			// 		},
-			// 		cancel: function () { 
-			// 			// 用户取消分享后执行的回调函数
-			// 		}
-			// 	});
-				
-			// 	wx.onMenuShareAppMessage({
-			// 		title: "十九大知识你知道多少？快来试试看！", // 分享标题
-			// 		desc: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享描述
-			// 		link: location.href.split("#")[0], // 分享链接
-			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-			// 		type: '', // 分享类型,music、video或link，不填默认为link
-			// 		dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-			// 		success: function () { 
-			// 			// 用户确认分享后执行的回调函数
-			// 			var oA = document.createElement("a");
-			// 			oA.href = "#";
-			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-			// 			document.body.appendChild(oA);
-			// 			$(".test").html(decodeURIComponent(window.headimgurl)+"|Message2");
-			// 		},
-			// 		cancel: function () { 
-			// 			// 用户取消分享后执行的回调函数
-			// 		}
-			// 	});	
-
-			// 	wx.onMenuShareQQ({
-			// 		title: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享标题
-			// 		desc: '快来参加十九大知识竞答吧！', // 分享描述
-			// 		link: json.url, // 分享链接
-			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-			// 		success: function () { 
-			// 			// 用户确认分享后执行的回调函数
-			// 			var oA = document.createElement("a");
-			// 			oA.href = "#";
-			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-			// 			document.body.appendChild(oA);
-			// 		},
-			// 		cancel: function () { 
-			// 			// 用户取消分享后执行的回调函数
-			// 		}
-			// 	});
-
-			// 	wx.onMenuShareQZone({
-			// 		title: "十九大知识你知道多少？快来试试看！", // 分享标题
-			// 		desc: decodeURIComponent(window.nickname)+"在十九大知识问答中答对"+_this.count+"道题，获得"+_this.userLevel+"称号！", // 分享描述
-			// 		link: json.url, // 分享链接
-			// 		imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-			// 		success: function () { 
-			// 			// 用户确认分享后执行的回调函数
-			// 			var oA = document.createElement("a");
-			// 			oA.href = "#";
-			// 			oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-			// 			document.body.appendChild(oA);
-			// 		},
-			// 		cancel: function () { 
-			// 			// 用户取消分享后执行的回调函数
-			// 		}
-			// 	});
-					
-			// });
-	
 		},
 		loadBoards () {
 			var _this = this;
 			var appendBoardLine = function ($parent, board) {
 				$parent.empty();
 				board.forEach((v, i) => {
-					$parent.append('<li><span class="nickname">' + v.user.nickname + '</span><span class="score">' + v.score + '</span></li>');
+					$parent.append('<li><span class="nickname">' + v.user.nickname + '</span><span class="score">(' + v.score + ')</span></li>');
 				});
 			};
 			$.getJSON('/quizzes/boards').done(json => {
@@ -1168,21 +1181,21 @@ body>a {display:none;}
 					appendBoardLine($('#xueminBoard'), json[0]);
 				} else {
 					$('#xueminBoard').empty();
-					$('#xueminBoard').append('<li><p>还没有人上榜，赶紧来抢沙发吧！</p></li>');
+					$('#xueminBoard').append('<li><p>还没有人上榜！</p></li>');
 				}
 
 				if (json[1] && json[1].length > 0) {
 					appendBoardLine($('#xuebaBoard'), json[1]);
 				} else {
 					$('#xuebaBoard').empty();
-					$('#xuebaBoard').append('<li><p>还没有人上榜，赶紧来抢沙发吧！</p></li>');
+					$('#xuebaBoard').append('<li><p>还没有人上榜！</p></li>');
 				}
 
 				if (json[2] && json[2].length > 0) {
 					appendBoardLine($('#xueshenBoard'), json[2]);
 				} else {
 					$('#xueshenBoard').empty();
-					$('#xueshenBoard').append('<li><p>还没有人上榜，赶紧来抢沙发吧！</p></li>');
+					$('#xueshenBoard').append('<li><p>还没有人上榜！</p></li>');
 				}
 			}).fail(() => {
 				_this.message('亲，榜单开小差了，麻烦您一会儿再来。');
@@ -1191,7 +1204,9 @@ body>a {display:none;}
 				$('#orgBoard').empty();
 				if (json) {
 					json.forEach((v, i) => {
-						$('#orgBoard').append('<li><span class="nickname">' + v.name + '</span><span class="score">' + (v.percent * 100).toFixed(2) + '%</span></li>')
+						$('#orgBoard').append('<li><span class="seq">' + (i + 1) + '</span>'
+							+ '<span class="nickname">' + v.name + '</span>'
+							+ '<span class="score">' + (v.percent * 100).toFixed(2) + '%</span></li>')
 					})
 				} else {
 					$('#orgBoard').append('<li><p>啊奥，怎么没有组织榜单呢？</p></li>');
@@ -1205,7 +1220,7 @@ body>a {display:none;}
 			$('#message').show();
 			setInterval(() => {
 				$('#message').hide();
-			}, 2000);
+			}, 5000);
 		}
 
 	};
@@ -1213,13 +1228,11 @@ body>a {display:none;}
 	(function(){
 		var url = location.href.split("#")[0];
 		url = url.replace("&","%26");
-		//$(".test").html(url);
-		// todo
 		$.getJSON('http://19da.cmlzw.net/jsapi/sign?url='+url,function(json){
 			console.log("sign " + url + " for jsapi: " + JSON.stringify(json))
 			if(json){
 				wx.config({
-					debug: true,
+					debug: false,
 					appId: json.appId,
 					timestamp: json.timestamp,
 					nonceStr: json.nonceStr,
@@ -1241,86 +1254,55 @@ body>a {display:none;}
 						link: json.url, // 分享链接
 						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
 						success: function () { 
-							//alert(111);// 用户确认分享后执行的回调函数
-							var oA = document.createElement("a");
-							oA.href = "#";
-							oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-							document.body.appendChild(oA);
-							//$(".test").html(url+"|timeline1");
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							console.log('share to Timeline success');
 						},
 						cancel: function () { 
-							// 用户取消分享后执行的回调函数
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelT&level='+_this.level+'&score='+_this.count);
+							console.log('cancel share to Timeline');
 						}
 					});
 
 					wx.onMenuShareAppMessage({
 						title: document.title, // 分享标题
-						desc: '快来参加十九大知识问答吧！', // 分享描述
+						desc: '快来刷新你的记录吧！', // 分享描述
 						link: json.url, // 分享链接
 						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
 						type: '', // 分享类型,music、video或link，不填默认为link
 						dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
 						success: function () { 
-							// 用户确认分享后执行的回调函数
-							var oA = document.createElement("a");
-							oA.href = "#";
-							oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-							document.body.appendChild(oA);
-							//$(".test").html(url+"|Message1");
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							console.log('share to AppMessage success');
 						},
 						cancel: function () { 
-						// 用户取消分享后执行的回调函数
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'CancelM&level='+_this.level+'&score='+_this.count);
+							console.log('cancel share to AppMessage');
 						}
 					});
 					wx.onMenuShareQQ({
 						title: document.title, // 分享标题
-						desc: '快来参加十九大知识竞答吧！', // 分享描述
+						desc: '快来刷新你的记录吧！', // 分享描述
 						link: json.url, // 分享链接
 						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
 						success: function () { 
-							// 用户确认分享后执行的回调函数
-							var oA = document.createElement("a");
-							oA.href = "#";
-							oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-							document.body.appendChild(oA);
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							console.log('share to QQ success');
 						},
 						cancel: function () { 
-						// 用户取消分享后执行的回调函数
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
+							console.log('cancel share to QQ');
 						}
 					});
 
 					wx.onMenuShareQZone({
 						title: document.title, // 分享标题
-						desc: '快来参加十九大知识竞答吧！', // 分享描述
+						desc: '快来刷新你的记录吧！', // 分享描述
 						link: json.url, // 分享链接
 						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
 						success: function () { 
-							// 用户确认分享后执行的回调函数
-							var oA = document.createElement("a");
-							oA.href = "#";
-							oA.innerHTML = '<img src="http://count.cankaoxiaoxi.com/count.png?contentid=2217686" alt="count">';
-							document.body.appendChild(oA);
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'&level='+_this.level+'&score='+_this.count);
+							console.log('share to QZone success');
 						},
 						cancel: function () { 
-						// 用户取消分享后执行的回调函数
-							//分享结果
-							// $.get('http://app.cankaoxiaoxi.com/inner/19bigshare.php?openid='+decodeURIComponent(window.openid)+'&nickname='+decodeURIComponent(window.nickname)+'Cancel&level='+_this.level+'&score='+_this.count);
+							console.log('cancel share to QZone');
 						}
 					});
+				});
+				wx.error(res => {
+					console.log('WxConfig error: ' + JSON.stringify(res));
 				});
 			}
 		});
@@ -1329,9 +1311,5 @@ body>a {display:none;}
 })(jQuery)
   
   </script>
-<!-- <script type="text/javascript">
-var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F5143eafec4b1937cb9b23c20f3de8f4d' type='text/javascript'%3E%3C/script%3E"));
-</script> -->
   </body>
 </html>

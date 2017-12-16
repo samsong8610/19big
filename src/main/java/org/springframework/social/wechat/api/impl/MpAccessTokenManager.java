@@ -58,7 +58,7 @@ public class MpAccessTokenManager {
             do {
                 Map body = internalRestTemplate.getForObject(getAccessTokenUrl(), Map.class);
                 if (body.containsKey("access_token")) {
-                    long expiresIn = Long.parseLong(body.get("expires_in").toString());
+                    long expiresIn = Long.valueOf(body.get("expires_in").toString()).longValue();
                     if (accessToken == null) {
                         accessToken = new MpAccessToken(body.get("access_token").toString(), expiresIn);
                     } else {
@@ -67,8 +67,9 @@ public class MpAccessTokenManager {
                     }
                     break;
                 } else {
-                    logger.warn("get access token failed: %s(%s)",
-                            body.getOrDefault("errmsg", ""), body.getOrDefault("errcode", ""));
+                    logger.warn(String.format("get access token failed: %s(%s)",
+                            body.getOrDefault("errmsg", "").toString(),
+                            body.getOrDefault("errcode", "").toString()));
                 }
             } while (retry++ < 3);
             if (retry >= 3) {

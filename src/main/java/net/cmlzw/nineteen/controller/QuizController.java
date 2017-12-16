@@ -34,11 +34,23 @@ public class QuizController {
     public QuizDto create(@RequestBody Quiz quiz, Principal principal) {
         String username = principal.getName();
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
-        Quiz found = repository.findByUsernameAndLevelAndCreated(username, quiz.getLevel(), today);
+        // note: allow submit many times but only record the best score
+//        Quiz found = repository.findByUsernameAndLevelAndCreated(username, quiz.getLevel(), today);
+//        if (found != null) {
+//            logger.info(String.format("Username %s has submitted today", username));
+//            throw new AlreadySubmittedException();
+//        }
+        Quiz found = repository.findByUsernameAndLevel(username, quiz.getLevel());
         if (found != null) {
-            logger.info(String.format("Username %s has submitted today", username));
-            throw new AlreadySubmittedException();
+            logger.info(String.format("Username %s has a quiz at level %d with score %d",
+                    username, quiz.getLevel(), quiz.getScore()));
+            if (quiz.getScore() > found.getScore()) {
+                found.setScore(quiz.getScore());
+                repository.save(found);
+            }
+            return valueFrom(found);
         }
+
         quiz.setUsername(username);
         quiz.setCreated(today);
         repository.save(quiz);
@@ -63,18 +75,35 @@ public class QuizController {
         return valueFrom(quiz);
     }
 
+    @PutMapping("/{id}")
+    public QuizDto update(@PathVariable Long id, @RequestBody Quiz quiz, Principal principal) {
+        String username = principal.getName();
+        Quiz found = repository.findOne(id);
+        if (found == null) {
+            throw new ResourceNotExistedException("quiz");
+        }
+
+        if (quiz.getScore() > found.getScore()) {
+            found.setScore(quiz.getScore());
+            repository.save(found);
+        }
+        return valueFrom(found);
+    }
+
     @GetMapping("/{username}")
     public List<QuizDto> getSubmmitted(@PathVariable String username) {
-        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
-        List<Quiz> found = repository.findByUsernameAndCreated(username, today);
-        if (found != null && found.size() > 0) {
-            List<QuizDto> result = new ArrayList<>(found.size());
-            for (Quiz each : found) {
-                result.add(valueFrom(each));
-            }
-            return result;
-        }
+        // Note: Allow submit many times
         throw new ResourceNotExistedException("quiz");
+//        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+//        List<Quiz> found = repository.findByUsernameAndCreated(username, today);
+//        if (found != null && found.size() > 0) {
+//            List<QuizDto> result = new ArrayList<>(found.size());
+//            for (Quiz each : found) {
+//                result.add(valueFrom(each));
+//            }
+//            return result;
+//        }
+//        throw new ResourceNotExistedException("quiz");
     }
 
     @GetMapping("/{username}/{level}")
@@ -84,7 +113,9 @@ public class QuizController {
         }
 
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
-        Quiz found = repository.findByUsernameAndLevelAndCreated(username, level, today);
+        // note: return the best quiz at the level
+//        Quiz found = repository.findByUsernameAndLevelAndCreated(username, level, today);
+        Quiz found = repository.findFirstByUsernameAndLevelOrderByScoreDesc(username, level);
         if (found == null) {
             throw new ResourceNotExistedException("quiz");
         }
@@ -96,7 +127,9 @@ public class QuizController {
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         List<List<QuizDto>> result = new ArrayList<>(3);
         for (int i = 0; i < 3; i++) {
-            List<Quiz> quizzes = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(i + 1, today);
+            // Note: historical board for each level
+//            List<Quiz> quizzes = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(i + 1, today);
+            List<Quiz> quizzes = repository.findTop20ByLevelOrderByScoreDesc(i + 1);
             List<QuizDto> dtos = quizzes.stream().map(quiz -> valueFrom(quiz)).collect(Collectors.toList());
             result.add(i, dtos);
         }
@@ -108,7 +141,9 @@ public class QuizController {
             @PathVariable Integer level,
             @RequestParam(required = false, defaultValue = "-1") int topn) {
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
-        List<Quiz> boards = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(level, today);
+        // Note: historical board for each level
+//        List<Quiz> boards = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(level, today);
+        List<Quiz> boards = repository.findTop20ByLevelOrderByScoreDesc(level);
         if (topn <= 0 || topn > boards.size()) {
             topn = boards.size();
         }

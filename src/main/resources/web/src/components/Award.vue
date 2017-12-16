@@ -12,6 +12,7 @@
         </el-col>
         <el-col :xs="{span:4}" :lg="{span:4}">
           <el-button type="primary" size="small" @click="onRefresh"><i class="el-icon-refresh"></i>刷新</el-button>
+          <el-button type="primary" @click="onPresentAward"><i class="el-icon-check"></i>生成获奖名单</el-button>
         </el-col>
       </el-row>
       <el-table :data="displayedAwards" stripe border>
@@ -126,6 +127,24 @@ export default {
     },
     onRefresh () {
       this.load()
+    },
+    onPresentAward () {
+      Api.award.save().then(resp => {
+        this.$message('成功生成获奖名单。')
+        resp.json().then(json => {
+          this.awards = json.content
+          this.pagination.first = json.first
+          this.pagination.last = json.last
+          this.pagination.number = json.number
+        })
+      }).catch(err => {
+        let reason = {
+          status: err.status,
+          error: err.error,
+          message: err.message
+        }
+        this.$message({type: 'warning', message: `生成获奖名单失败。原因：‘${JSON.stringify(reason)}’。`})
+      })
     },
     notify (award, index) {
       Api.award.update({id: award.id}, award).then(resp => {

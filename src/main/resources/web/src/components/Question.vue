@@ -60,9 +60,9 @@
                 <el-switch v-model="currentLevel.active" active-color="#67c23a" inactive-color="#e6ebf5"></el-switch>
               </el-form-item>
               <el-table :data="currentLevel.questions" stripe>
-                <el-table-column prop="title" label="题干" min-width="38">
+                <el-table-column prop="question" label="题干" min-width="38">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.title" placeholder="题干"></el-input>
+                    <el-input v-model="scope.row.question" placeholder="题干"></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column prop="answers[0]" label="选项一" min-width="13">
@@ -155,7 +155,7 @@ export default {
           level: '',
           active: false,
           questions: [
-            {title: '', answers: ['', '', ''], answer: ''}
+            {question: '', answers: ['', '', ''], answer: ''}
           ],
           created: new Date()
         }
@@ -163,7 +163,7 @@ export default {
     },
     editLevel (row, rowIndex) {
       if (row.questions.length === 0) {
-        row.questions.push({title: '', answers: ['', '', ''], answer: ''})
+        row.questions.push({question: '', answers: ['', '', ''], answer: ''})
       }
       this.currentLevel = row
       this.isNewLevel = false
@@ -266,14 +266,14 @@ export default {
         let valid = true
         let message = ''
         level.questions.forEach(element => {
-          if (element.title === '' || element.answer === '' ||
+          if (element.question === '' || element.answer === '' ||
             element.answers === null || element.answers.length !== 3 ||
             element.answers[0] === '' || element.answers[1] === '' || element.answers[2] === '') {
-            message = '题目列表以及每个题目的题干、选项、答案都不能为空。题目标题：' + element.title
+            message = '题目列表以及每个题目的题干、选项、答案都不能为空。题目标题：' + element.question
             valid = false
           }
           if (element.answers.indexOf(element.answer) === -1) {
-            message = `题目‘${element.title}’的答案‘${element.answer}’不在选项范围内。`
+            message = `题目‘${element.question}’的答案‘${element.answer}’不在选项范围内。`
             valid = false
           }
           return valid
@@ -283,7 +283,7 @@ export default {
       return {valid: false, message: '题库必须有至少一个题目。'}
     },
     addQuestion () {
-      this.currentLevel.questions.push({title: '', answers: ['', '', ''], answer: ''})
+      this.currentLevel.questions.push({question: '', answers: ['', '', ''], answer: ''})
     },
     deleteQuestion (question, index) {
       this.$confirm('您确定删除当前题目吗？', '提示', {

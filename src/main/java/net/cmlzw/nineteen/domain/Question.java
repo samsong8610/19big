@@ -1,9 +1,6 @@
 package net.cmlzw.nineteen.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -17,6 +14,7 @@ public class Question {
     @GeneratedValue
     Long id;
     @Column(nullable = false)
+    @JsonProperty("question")
     String title;
     @JsonIgnore
 //    @Column(columnDefinition = "varchar(255)")

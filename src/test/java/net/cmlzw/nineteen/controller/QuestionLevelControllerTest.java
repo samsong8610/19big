@@ -177,7 +177,7 @@ public class QuestionLevelControllerTest {
                 .andExpect(jsonPath("$.created").isNotEmpty())
                 .andExpect(jsonPath("$.questions").isArray())
                 .andExpect(jsonPath("$.questions.length()").value(1))
-                .andExpect(jsonPath("$.questions[0].title").value("question 1"))
+                .andExpect(jsonPath("$.questions[0].question").value("question 1"))
                 .andExpect(jsonPath("$.questions[0].answers.length()").value(3))
                 .andExpect(jsonPath("$.questions[0].answer").value("answer 1"));
     }
@@ -216,10 +216,10 @@ public class QuestionLevelControllerTest {
                 .andExpect(jsonPath("$.created").isNotEmpty())
                 .andExpect(jsonPath("$.questions").isArray())
                 .andExpect(jsonPath("$.questions.length()").value(2))
-                .andExpect(jsonPath("$.questions[0].title").value("question 2"))
+                .andExpect(jsonPath("$.questions[0].question").value("question 2"))
                 .andExpect(jsonPath("$.questions[0].answers.length()").value(3))
                 .andExpect(jsonPath("$.questions[0].answer").value("answer 2"))
-                .andExpect(jsonPath("$.questions[1].title").value("question 3"))
+                .andExpect(jsonPath("$.questions[1].question").value("question 3"))
                 .andExpect(jsonPath("$.questions[1].answers.length()").value(3))
                 .andExpect(jsonPath("$.questions[1].answer").value("answer 3"));
     }
