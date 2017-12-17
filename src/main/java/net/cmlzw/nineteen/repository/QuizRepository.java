@@ -26,4 +26,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Quiz findFirstByUsernameAndLevelOrderByScoreDesc(String username, int level);
 
     Quiz findByUsernameAndLevel(String username, int level);
+
+    List<Quiz> findByUsername(String username);
 }

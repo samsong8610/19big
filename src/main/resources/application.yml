@@ -8,11 +8,11 @@ spring:
       enabled: false
   social:
     wechat:
-      appid: your-app-id
-      appsecret: your-app-secret
-      mp:
-        appid: your-app-id
-        appsecret: your-app-secret
+    #   appid: your-app-id
+    #   appsecret: your-app-secret
+    #   mp:
+    #     appid: your-app-id
+    #     appsecret: your-app-secret
 ---
 
 spring:

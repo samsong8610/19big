@@ -1,5 +1,6 @@
 package net.cmlzw.nineteen.controller;
 
+import net.cmlzw.nineteen.repository.QuizRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,8 @@ public class UserControllerTest {
     UserController controller;
     @MockBean
     UserRepository userRepository;
+    @MockBean
+    QuizRepository quizRepository;
     @MockBean
     ConnectionRepository connectionRepository;
     @MockBean

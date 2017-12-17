@@ -9,6 +9,7 @@ public class QuizDto {
     int level;
     User user;
     String organization;
+    Long organizationId;
     String phone;
     int score;
     Date created;
@@ -43,6 +44,14 @@ public class QuizDto {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public Long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getPhone() {

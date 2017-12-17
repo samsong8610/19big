@@ -14,12 +14,14 @@
 	(function () {
 		window.headimgurl = "http://image.cmlzw.net/19da/fenxiang-thumb.jpg"
 		$.get('/userinfo').done((data, status, xhr) => {
-			window.nickname = data.nickname
-			window.openid = data.openid
-			window.username = data.username
+			window.nickname = data.nickname;
+			window.openid = data.openid;
+			window.username = data.username;
+			window.phoneNum = data.phone;
+			window.organizationId = data.organizationId;
 		}).fail((err) => {
-			console.log(JSON.stringify(err))
-		})
+			console.log(JSON.stringify(err));
+		});
 	})();
 
 </script>
@@ -98,8 +100,8 @@ body>a {display:none;}
 .box06 form {margin: 2.5rem auto 0.5rem auto; width: 90%;}
 .box06 form label {display: block;}
 .box06 form span.phoneError {color: red;}
-.box06 form input {height: 1rem;}
-.box06 form select {height: 1rem;}
+.box06 form input {height: 1rem; font-size: large;}
+.box06 form select {height: 1rem; font-size: large; width: 100%;}
 .box06 .buttons {margin: 0 auto; width: 80%; text-align: center;}
 .box06 .buttons span {display: inline-block;}
 .box06 .buttons span img {width: 2rem;}
@@ -660,6 +662,8 @@ body>a {display:none;}
 			this.again.on('click', function(){
 				_this.count = 0;
 				_this.userLevel = '';
+				_this.timeSpan.html(_this.time);
+				_this.finishQue = 0;
 				_this.setCookie("several",1,10);
 				_this.wbegin05.show();
 				_this.endPage.hide();
@@ -679,6 +683,18 @@ body>a {display:none;}
 					_this.message('很遗憾，这次挑战没有超越自己的最好成绩'+ _this.quiz.score + '个，继续加油吧！');
 					return;
 				}
+				// init form using current quiz
+				var phone = '';
+				var organizationId = '';
+				if (_this.quiz) {
+					phone = _this.quiz.phone || '';
+					organizationId = _this.quiz.organizationId || '';
+				} else {
+					phone = window.phoneNum;
+					organizationId = window.organizationId;
+				}
+				$('#qiandao form input').val(phone);
+				$('#qiandao form select').val(organizationId);
 				_this.qiandaoPage.show();
 				_this.endPage.hide();
 			});
@@ -807,6 +823,8 @@ body>a {display:none;}
 					data: JSON.stringify(quiz),
 					contentType: 'application/json;charset=utf8'
 				}).done((data, status) => {
+					window.phoneNum = quiz.phone;
+					window.organizationId = quiz.organizationId || '';
 					_this.message('答题成绩提交成功，随时等候您来提交自己的更好成绩奥。')
 					// note: always allow submit many times
 					// $('.box06 .buttons .submit').off('click');

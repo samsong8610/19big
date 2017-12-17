@@ -54,10 +54,14 @@ public class QuizController {
         quiz.setUsername(username);
         quiz.setCreated(today);
         repository.save(quiz);
-        if (quiz.getOrganizationId() != null) {
+        if (quiz.getOrganizationId() != null && quiz.getOrganizationId() != 0) {
             int retry = 0;
             do {
                 Organization org = orgRepository.findOne(quiz.getOrganizationId());
+                if (org == null) {
+                    logger.info(String.format("Could not find org with id %d", quiz.getOrganizationId()));
+                    break;
+                }
                 int count = repository.countDistinctUsernameByOrganizationId(quiz.getOrganizationId());
                 org.setSubmittedMembers(count);
                 try {
@@ -169,6 +173,7 @@ public class QuizController {
             Organization org = orgRepository.findOne(quiz.getOrganizationId());
             if (org != null) {
                 result.setOrganization(org.getName());
+                result.setOrganizationId(org.getId());
             }
         }
         return result;

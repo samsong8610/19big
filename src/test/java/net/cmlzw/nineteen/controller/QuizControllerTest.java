@@ -82,6 +82,7 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$.user.username").value("u1"))
                 .andExpect(jsonPath("$.user.nickname").value("u1"))
                 .andExpect(jsonPath("$.organization").value("org"))
+                .andExpect(jsonPath("$.organizationId").value(1))
                 .andExpect(jsonPath("$.level").value(1))
                 .andExpect(jsonPath("$.score").value(8))
                 .andExpect(jsonPath("$.phone").value("15800000000"))
@@ -116,6 +117,7 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$.user.username").value("u1"))
                 .andExpect(jsonPath("$.user.nickname").value("u1"))
                 .andExpect(jsonPath("$.organization").doesNotExist())
+                .andExpect(jsonPath("$.organizationId").doesNotExist())
                 .andExpect(jsonPath("$.level").value(1))
                 .andExpect(jsonPath("$.score").value(8))
                 .andExpect(jsonPath("$.phone").value("15800000000"))
@@ -226,6 +228,7 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$[0].user.username").value("u1"))
                 .andExpect(jsonPath("$[0].user.nickname").value("u1"))
                 .andExpect(jsonPath("$[0].organization").value("org"))
+                .andExpect(jsonPath("$[0].organizationId").value(1))
                 .andExpect(jsonPath("$[0].level").value(1))
                 .andExpect(jsonPath("$[0].score").value(8))
                 .andExpect(jsonPath("$[0].phone").value("15800000000"))
@@ -380,9 +383,11 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$[0].id").value(9))
                 .andExpect(jsonPath("$[0].user.username").value("u9"))
                 .andExpect(jsonPath("$[0].organization").value("org"))
+                .andExpect(jsonPath("$[0].organizationId").value(1))
                 .andExpect(jsonPath("$[4].id").value(5))
                 .andExpect(jsonPath("$[4].user.username").value("u5"))
-                .andExpect(jsonPath("$[4].organization").value("org"));
+                .andExpect(jsonPath("$[4].organization").value("org"))
+                .andExpect(jsonPath("$[4].organizationId").value(1));
     }
 
 }

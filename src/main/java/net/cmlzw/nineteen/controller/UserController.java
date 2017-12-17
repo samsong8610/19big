@@ -1,6 +1,8 @@
 package net.cmlzw.nineteen.controller;
 
+import net.cmlzw.nineteen.domain.Quiz;
 import net.cmlzw.nineteen.domain.User;
+import net.cmlzw.nineteen.repository.QuizRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -30,6 +33,8 @@ import java.util.regex.Pattern;
 public class UserController {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    QuizRepository quizRepository;
     @Autowired
     ConnectionRepository connectionRepository;
     @Autowired
@@ -57,6 +62,20 @@ public class UserController {
             System.out.println("===Does not find connect");
         }
         info.put("openid", openid);
+
+        // TODO: Yes it is ugly to find the phone and org info from quiz
+        String phone = "";
+        String organizationId = "";
+        List<Quiz> quizzes = quizRepository.findByUsername(username);
+        if (quizzes != null && quizzes.size() > 0) {
+            Quiz quiz = quizzes.get(0);
+            phone = quiz.getPhone();
+            if (quiz.getOrganizationId() != null) {
+                organizationId = Long.toString(quiz.getOrganizationId());
+            }
+        }
+        info.put("phone", phone);
+        info.put("organizationId", organizationId);
         return info;
     }
 
