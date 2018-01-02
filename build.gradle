@@ -2,7 +2,7 @@ plugins {
     id "org.springframework.boot" version "1.5.8.RELEASE"
 }
 group 'net.cmlzw'
-version '1.0.0'
+version '1.0.1'
 
 apply plugin: 'java'
 
