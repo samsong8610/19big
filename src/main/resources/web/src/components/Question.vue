@@ -59,7 +59,13 @@
               <el-form-item label="状态" prop="active">
                 <el-switch v-model="currentLevel.active" active-color="#67c23a" inactive-color="#e6ebf5"></el-switch>
               </el-form-item>
-              <el-table :data="currentLevel.questions" stripe>
+              <div>
+                <el-radio-group v-model="editMode">
+                  <el-radio-button label="逐行"></el-radio-button>
+                  <el-radio-button label="批量"></el-radio-button>
+                </el-radio-group>
+              </div>
+              <el-table v-show="editMode == '逐行'" :data="currentLevel.questions" stripe>
                 <el-table-column prop="question" label="题干" min-width="38">
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.question" placeholder="题干"></el-input>
@@ -92,6 +98,9 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-form-item v-show="editMode == '批量'">
+                <el-input type="textarea" :autosize="{minRows: 40}" v-model.lazy="bulkQuestions" placeholder="支持多行，每行的格式是'题干|选项1|选项2|选项3|答案'"></el-input>
+              </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="small" @click="saveLevel">保存</el-button>
               </el-form-item>
@@ -121,6 +130,7 @@ export default {
       },
       isNewLevel: false,
       isDirtyLevel: false,
+      editMode: '批量',
       levelRules: {
         title: [
           {required: true, message: '请输入题库主题', trigger: 'blur'}
@@ -134,6 +144,38 @@ export default {
         {label: '学霸', value: 2},
         {label: '学神', value: 3}
       ]
+    }
+  },
+  computed: {
+    bulkQuestions: {
+      get: function () {
+        console.log('bulkQuestions get')
+        let result = ''
+        if (this.currentLevel && this.currentLevel.questions) {
+          this.currentLevel.questions.forEach(q => {
+            if (result) {
+              result += '\n'
+            }
+            if (q.question) {
+              result += `${q.question}|${q.answers[0]}|${q.answers[1]}|${q.answers[2]}|${q.answer}`
+            }
+          })
+        }
+        return result
+      },
+      set: function (newValue) {
+        console.log('bulkQuestions set')
+        let questions = []
+        if (newValue) {
+          newValue.split('\n').forEach(line => {
+            let parts = line.split('|')
+            if (parts.length === 5) {
+              questions.push({question: parts[0], answers: [parts[1], parts[2], parts[3]], answer: parts[4]})
+            }
+          })
+        }
+        this.currentLevel.questions = questions
+      }
     }
   },
   methods: {
@@ -301,7 +343,7 @@ export default {
     },
     load () {
       // this.questions = [
-      //   {title: '19大学民题目', level: 1, active: true, questions: [{title: '红色的英文单词是？', answers: ['Red', 'Green', 'Blue'], answer: 'Red'}], created: 1511620409863},
+      //   {title: '19大学民题目', level: 1, active: true, questions: [{question: '红色的英文单词是？', answers: ['Red', 'Green', 'Blue'], answer: 'Red'}], created: 1511620409863},
       //   {title: '19大学霸题目', level: 2, active: true, questions: [], created: 1511620419863},
       //   {title: '19大学神题目', level: 3, active: false, questions: [], created: 1511620429863}
       // ]
