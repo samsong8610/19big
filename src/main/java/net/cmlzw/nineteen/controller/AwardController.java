@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +46,7 @@ public class AwardController {
         // note: present awards to the top 20 quizzes of each level
         List<Award> awards = new ArrayList<>(60);
         for (int level = 0; level < 3; level++) {
-            List<Quiz> quizzes = quizRepository.findTop20ByLevelOrderByScoreDesc(level + 1);
+            List<Quiz> quizzes = quizRepository.findTop20ByLevelOrderByScoreDescCreatedDesc(level + 1);
 
             for (int j = 0; j < quizzes.size(); level++) {
                 Award award = new Award();

@@ -62,6 +62,8 @@ public class MpAccessToken {
     }
 
     private long calculateExpiresAt(long expiresIn) {
-        return 0;
+        long now = Instant.now().getEpochSecond();
+        // Note: Set to expire 5 seconds before actual
+        return now + expiresIn - 5;
     }
 }

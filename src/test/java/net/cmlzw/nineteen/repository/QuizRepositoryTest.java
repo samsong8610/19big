@@ -104,6 +104,26 @@ public class QuizRepositoryTest {
     }
 
     @Test
+    public void findTop20ByLevelOrderByScoreDescCreatedDesc() throws Exception {
+        Quiz anotherXuemin = new Quiz();
+        anotherXuemin.setPhone("15800000001");
+        anotherXuemin.setScore(8);
+        anotherXuemin.setLevel(1);
+        anotherXuemin.setUsername("u3");
+        anotherXuemin.setOrganizationId(1L);
+        anotherXuemin.setCreated(today);
+        entityManager.persist(anotherXuemin);
+
+        List<Quiz> actual = repository.findTop20ByLevelOrderByScoreDescCreatedDesc(1);
+        assertNotNull(actual);
+        assertEquals(3, actual.size());
+        assertEquals("u3", actual.get(0).getUsername());
+        assertEquals(8, actual.get(0).getScore());
+        assertEquals("u1", actual.get(1).getUsername());
+        assertEquals(8, actual.get(1).getScore());
+    }
+
+    @Test
     public void countDistinctUsernameByOrganizationId() throws Exception {
         Quiz anotherXueba = new Quiz();
         anotherXueba.setPhone("15800000001");

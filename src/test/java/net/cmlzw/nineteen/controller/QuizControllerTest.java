@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.mockito.BDDMockito.given;
@@ -372,8 +371,8 @@ public class QuizControllerTest {
 
         given(orgRepository.findOne(org.getId())).willReturn(org);
         // note: historical board
-//        given(repository.findTop20ByLevelOrderByScoreDesc(1, today)).willReturn(boards);
-        given(repository.findTop20ByLevelOrderByScoreDesc(1)).willReturn(boards);
+//        given(repository.findTop20ByLevelOrderByScoreDescCreatedDesc(1, today)).willReturn(boards);
+        given(repository.findTop20ByLevelOrderByScoreDescCreatedDesc(1)).willReturn(boards);
         mockMvc.perform(get("/quizzes/boards/1").param("topn", "5"))
                 .andDo(print())
                 .andExpect(status().isOk())

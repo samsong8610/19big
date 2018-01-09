@@ -12,7 +12,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -133,7 +132,7 @@ public class QuizController {
         for (int i = 0; i < 3; i++) {
             // Note: historical board for each level
 //            List<Quiz> quizzes = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(i + 1, today);
-            List<Quiz> quizzes = repository.findTop20ByLevelOrderByScoreDesc(i + 1);
+            List<Quiz> quizzes = repository.findTop20ByLevelOrderByScoreDescCreatedDesc(i + 1);
             List<QuizDto> dtos = quizzes.stream().map(quiz -> valueFrom(quiz)).collect(Collectors.toList());
             result.add(i, dtos);
         }
@@ -147,7 +146,7 @@ public class QuizController {
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         // Note: historical board for each level
 //        List<Quiz> boards = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(level, today);
-        List<Quiz> boards = repository.findTop20ByLevelOrderByScoreDesc(level);
+        List<Quiz> boards = repository.findTop20ByLevelOrderByScoreDescCreatedDesc(level);
         if (topn <= 0 || topn > boards.size()) {
             topn = boards.size();
         }

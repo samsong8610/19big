@@ -49,6 +49,7 @@ public class SimpleConnectionSignUpService implements ConnectionSignUp {
             logger.info("Assign ADMIN authority to " + userProfile.getName());
             return "ADMIN";
         }
+        logger.info("Assign USER authority to " + userProfile.getName());
         return "USER";
     }
 }

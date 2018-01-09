@@ -18,7 +18,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     List<Quiz> findTop20ByLevelAndCreatedOrderByScoreDesc(Integer level, Date today);
 
-    List<Quiz> findTop20ByLevelOrderByScoreDesc(Integer level);
+    List<Quiz> findTop20ByLevelOrderByScoreDescCreatedDesc(Integer level);
 
     @Query("select count(distinct q.username) from Quiz q where q.organizationId = ?1")
     int countDistinctUsernameByOrganizationId(Long orgId);
