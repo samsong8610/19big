@@ -275,6 +275,9 @@ public class WeChatOAuth2Template implements OAuth2Operations {
         for (Iterator<Map.Entry<String, List<String>>> additionalParams = parameters.entrySet().iterator(); additionalParams.hasNext();) {
             Map.Entry<String, List<String>> param = additionalParams.next();
             String name = formEncode(param.getKey());
+            if (name.equals("connect_redirect")) {
+
+            }
             for (Iterator<String> values = param.getValue().iterator(); values.hasNext();) {
                 authUrl.append('&').append(name);
                 String value = values.next();
@@ -298,9 +301,9 @@ public class WeChatOAuth2Template implements OAuth2Operations {
 
     private AccessGrant extractAccessGrant(Map<String, Object> result) {
         // TODO: remove debug output
-        System.out.println("===================AccessToken response:");
+        logger.debug("AccessToken response:");
         for (String k : result.keySet()) {
-            System.out.printf("%s = %s\n", k, result.get(k).toString());
+            logger.debug(String.format("%s = %s\n", k, result.get(k).toString()));
         }
         return createAccessGrant((String) result.get("access_token"), (String) result.get("scope"),
                 (String) result.get("refresh_token"), getIntegerValue(result, "expires_in"), result);
