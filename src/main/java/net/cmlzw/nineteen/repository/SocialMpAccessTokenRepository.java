@@ -1,6 +1,8 @@
 package net.cmlzw.nineteen.repository;
 
 import net.cmlzw.nineteen.controller.ConcurrentConflictException;
+import net.cmlzw.nineteen.domain.Token;
+import net.cmlzw.nineteen.domain.TokenType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.social.wechat.api.MpAccessToken;
@@ -10,14 +12,14 @@ import java.util.List;
 
 public class SocialMpAccessTokenRepository implements MpAccessTokenRepository {
     @Autowired
-    net.cmlzw.nineteen.repository.MpAccessTokenRepository repository;
+    TokenRepository repository;
 
     @Override
     public MpAccessToken get() {
-        net.cmlzw.nineteen.domain.MpAccessToken current = findFirst();
+        Token current = findFirst();
         MpAccessToken result = null;
         if (current != null) {
-            result = new MpAccessToken(current.getAccessToken(), current.getExpiresIn());
+            result = new MpAccessToken(current.getContent(), current.getExpiresIn(), current.getExpiresAt());
         }
         return result;
     }
@@ -26,12 +28,14 @@ public class SocialMpAccessTokenRepository implements MpAccessTokenRepository {
     public void save(MpAccessToken accessToken) {
         int retry = 0;
         do {
-            net.cmlzw.nineteen.domain.MpAccessToken current = findFirst();
+            Token current = findFirst();
             if (current == null) {
-                current = new net.cmlzw.nineteen.domain.MpAccessToken(accessToken.getAccessToken(), accessToken.getExpiresIn());
+                current = new Token(TokenType.MpAccessToken,
+                        accessToken.getAccessToken(), accessToken.getExpiresIn(), accessToken.getExpiresAt());
             } else {
-                current.setAccessToken(accessToken.getAccessToken());
+                current.setContent(accessToken.getAccessToken());
                 current.setExpiresIn(accessToken.getExpiresIn());
+                current.setExpiresAt(accessToken.getExpiresAt());
             }
             try {
                 repository.save(current);
@@ -45,9 +49,9 @@ public class SocialMpAccessTokenRepository implements MpAccessTokenRepository {
         }
     }
 
-    private net.cmlzw.nineteen.domain.MpAccessToken findFirst() {
-        net.cmlzw.nineteen.domain.MpAccessToken current = null;
-        List<net.cmlzw.nineteen.domain.MpAccessToken> all = repository.findAll();
+    private Token findFirst() {
+        Token current = null;
+        List<Token> all = repository.findAllByType(TokenType.MpAccessToken);
         if (all != null && all.size() > 0) {
             current = all.get(0);
         }

@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.Charset;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,12 +60,16 @@ public class MpAccessTokenManager {
                 Map body = internalRestTemplate.getForObject(getAccessTokenUrl(), Map.class);
                 if (body.containsKey("access_token")) {
                     long expiresIn = Long.valueOf(body.get("expires_in").toString()).longValue();
+                    long expiresAt = Instant.now().getEpochSecond() + expiresIn;
                     if (accessToken == null) {
-                        accessToken = new MpAccessToken(body.get("access_token").toString(), expiresIn);
+                        accessToken = new MpAccessToken(body.get("access_token").toString(), expiresIn, expiresAt);
                     } else {
                         accessToken.setAccessToken(body.get("access_token").toString());
                         accessToken.setExpiresIn(expiresIn);
+                        accessToken.setExpiresAt(expiresAt);
                     }
+                    logger.info("update access token %s to expires at %d, age %d",
+                            accessToken.getAccessToken(), accessToken.getExpiresAt(), accessToken.getExpiresIn());
                     break;
                 } else {
                     logger.warn(String.format("get access token failed: %s(%s)",

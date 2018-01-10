@@ -1,8 +1,11 @@
 package net.cmlzw.nineteen.controller;
 
 import net.cmlzw.nineteen.domain.Quiz;
+import net.cmlzw.nineteen.domain.Token;
+import net.cmlzw.nineteen.domain.TokenType;
 import net.cmlzw.nineteen.domain.User;
 import net.cmlzw.nineteen.repository.QuizRepository;
+import net.cmlzw.nineteen.repository.TokenRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,8 @@ public class UserController {
     WeChatMp weChatMp;
     @Value("${spring.social.wechat.mp.appid}")
     String mpAppId;
+    @Autowired
+    TokenRepository tokenRepository;
 
     @GetMapping("/userinfo")
     @ResponseBody
@@ -93,9 +98,9 @@ public class UserController {
     @GetMapping("/jsapi/sign")
     @ResponseBody
     public Map<String, String> jsApiSignature(@RequestParam String url) throws NoSuchAlgorithmException {
-        JsApiTicket ticket = weChatMp.jsApiOperations().getTicket();
+        JsApiTicket ticket = getTicket();
         HashMap<String, String> params = new HashMap<>();
-        params.put("jsapi_ticket", ticket.getTicket());
+        params.put("jsapi_ticket", ticket == null ? "" : ticket.getTicket());
         params.put("noncestr", RandomStringUtils.randomAlphanumeric(16));
         params.put("timestamp", String.format("%d", Instant.now().getEpochSecond()));
         params.put("url", url);
@@ -106,6 +111,35 @@ public class UserController {
         result.put("timestamp", params.get("timestamp"));
         result.put("url", url);
         result.put("signature", sign(params));
+        return result;
+    }
+
+    private JsApiTicket getTicket() {
+        List<Token> tickets = tokenRepository.findAllByType(TokenType.JsApiTicket);
+        Token current;
+        JsApiTicket result;
+        if (tickets != null && tickets.size() > 0) {
+            current = tickets.get(0);
+            if (current.isExpired()) {
+                result = weChatMp.jsApiOperations().getTicket();
+                if (result == null) {
+                    return result;
+                }
+                current.setContent(result.getTicket());
+                current.setExpiresIn(result.getExpiresIn());
+                current.setExpiresAt(Instant.now().getEpochSecond() + result.getExpiresIn());
+            } else {
+                result = new JsApiTicket(current.getContent(), (int) current.getExpiresIn());
+            }
+        } else {
+            result = weChatMp.jsApiOperations().getTicket();
+            if (result == null) {
+                return result;
+            }
+            long expiresAt = Instant.now().getEpochSecond() + result.getExpiresIn();
+            current = new Token(TokenType.JsApiTicket, result.getTicket(), result.getExpiresIn(), expiresAt);
+        }
+        tokenRepository.save(current);
         return result;
     }
 

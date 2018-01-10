@@ -8,10 +8,10 @@ public class MpAccessToken {
     long expiresIn;
     long expiresAt;
 
-    public MpAccessToken(String accessToken, long expiresIn) {
+    public MpAccessToken(String accessToken, long expiresIn, long expiresAt) {
         this.accessToken = accessToken;
         this.expiresIn = expiresIn;
-        this.expiresAt = calculateExpiresAt(expiresIn);
+        this.expiresAt = expiresAt;
     }
 
     public Long getId() {
@@ -36,7 +36,6 @@ public class MpAccessToken {
 
     public void setExpiresIn(long expiresIn) {
         this.expiresIn = expiresIn;
-        this.expiresAt = calculateExpiresAt(expiresIn);
     }
 
     public long getExpiresAt() {
@@ -44,12 +43,7 @@ public class MpAccessToken {
     }
 
     public void setExpiresAt(long expiresAt) {
-        long now = Instant.now().getEpochSecond();
-        if (expiresAt < now) {
-            throw new IllegalArgumentException("expiresAt should be after now");
-        }
         this.expiresAt = expiresAt;
-        this.expiresIn = expiresAt - now;
     }
 
     public boolean isExpired() {
@@ -59,11 +53,5 @@ public class MpAccessToken {
     @Override
     public String toString() {
         return String.format("MpAccessToken{access_token: %s, expires_in: %d}", this.accessToken, this.expiresIn);
-    }
-
-    private long calculateExpiresAt(long expiresIn) {
-        long now = Instant.now().getEpochSecond();
-        // Note: Set to expire 5 seconds before actual
-        return now + expiresIn - 5;
     }
 }

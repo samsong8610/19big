@@ -9,6 +9,7 @@ import org.springframework.social.wechat.api.WeChatException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Instant;
 import java.util.Map;
 
 public class JsApiTemplate implements JsApiOperations {
@@ -17,6 +18,8 @@ public class JsApiTemplate implements JsApiOperations {
 
     private MpAccessTokenManager accessTokenManager;
     private RestTemplate restTemplate;
+    private JsApiTicket ticket = null;
+    private long expiresAt = 0;
 
     public JsApiTemplate(MpAccessTokenManager accessTokenManager) {
         this.accessTokenManager = accessTokenManager;
@@ -25,14 +28,17 @@ public class JsApiTemplate implements JsApiOperations {
 
     @Override
     public JsApiTicket getTicket() {
-        String jsapiUrl = getJsApiUrl();
+        if (ticket != null && !isExpired()) {
+            return ticket;
+        }
         int retry = 0;
         do {
+            String jsapiUrl = getJsApiUrl();
             Map body = restTemplate.getForObject(jsapiUrl, Map.class);
             int errcode = (int) body.getOrDefault("errcode", 0);
             String errmsg = (String) body.getOrDefault("errmsg", "");
             if (errcode != 0) {
-                logger.warn("Get JsApi ticket failed: %s(%s)", errmsg, errcode);
+                logger.warn(String.format("Get JsApi ticket failed: %s(%d)", errmsg, errcode));
                 if (errcode == 40014) {
                     // invalid access token, refresh token
                     jsapiUrl = getJsApiUrl();
@@ -41,16 +47,21 @@ public class JsApiTemplate implements JsApiOperations {
                 try {
                     String ticket = body.get("ticket").toString();
                     int expiresIn = (int) body.get("expires_in");
-                    JsApiTicket jsApiTicket = new JsApiTicket(ticket, expiresIn);
+                    expiresAt = Instant.now().getEpochSecond() + expiresIn;
+                    this.ticket = new JsApiTicket(ticket, expiresIn);
                     logger.debug(String.format("Got JsApi ticket: %s, expires in %d seconds",
-                            jsApiTicket.getTicket(), jsApiTicket.getExpiresIn()));
-                    return jsApiTicket;
+                            this.ticket.getTicket(), this.ticket.getExpiresIn()));
+                    return this.ticket;
                 } catch (Exception e) {
                     logger.warn("Parse JsApiTicket failed", e);
                 }
             }
         } while(retry++ < 3);
         throw new WeChatException(-1, "Get JsApi ticket failed after 3 times retry");
+    }
+
+    private boolean isExpired() {
+        return Instant.now().getEpochSecond() > expiresAt;
     }
 
     private String getJsApiUrl() {

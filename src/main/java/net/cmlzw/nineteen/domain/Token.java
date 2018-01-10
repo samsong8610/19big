@@ -4,22 +4,26 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-public class MpAccessToken {
+public class Token {
     @Id
     @GeneratedValue
     Long id;
+    @Column(length = 64, nullable = false)
+    @Enumerated(EnumType.STRING)
+    TokenType type;
     @Column(length = 512, nullable = false, unique = true)
-    String accessToken;
+    String content;
     long expiresIn;
     long expiresAt;
     @Version
     long version;
 
-    public MpAccessToken() {}
-    public MpAccessToken(String accessToken, long expiresIn) {
-        this.accessToken = accessToken;
+    public Token() {}
+    public Token(TokenType type, String content, long expiresIn, long expiresAt) {
+        this.type = type;
+        this.content = content;
         this.expiresIn = expiresIn;
-        this.expiresAt = calculateExpiresAt(expiresIn);
+        this.expiresAt = expiresAt;
     }
 
     public Long getId() {
@@ -30,12 +34,20 @@ public class MpAccessToken {
         this.id = id;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public TokenType getType() {
+        return type;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setType(TokenType type) {
+        this.type = type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public long getExpiresIn() {
@@ -44,7 +56,6 @@ public class MpAccessToken {
 
     public void setExpiresIn(long expiresIn) {
         this.expiresIn = expiresIn;
-        this.expiresAt = calculateExpiresAt(expiresIn);
     }
 
     public long getExpiresAt() {
@@ -52,12 +63,7 @@ public class MpAccessToken {
     }
 
     public void setExpiresAt(long expiresAt) {
-        long now = Instant.now().getEpochSecond();
-        if (expiresAt < now) {
-            throw new IllegalArgumentException("expiresAt should be after now");
-        }
         this.expiresAt = expiresAt;
-        this.expiresIn = expiresAt - now;
     }
 
     public long getVersion() {
@@ -74,10 +80,7 @@ public class MpAccessToken {
 
     @Override
     public String toString() {
-        return String.format("MpAccessToken{access_token: %s, expires_in: %d}", this.accessToken, this.expiresIn);
-    }
-
-    private long calculateExpiresAt(long expiresIn) {
-        return 0;
+        return String.format("Token{type: %s, content: %s, expires_at: %d, age: %d}",
+                this.type, this.content, this.expiresAt, this.expiresIn);
     }
 }

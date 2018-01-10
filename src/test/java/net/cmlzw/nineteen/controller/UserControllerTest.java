@@ -1,6 +1,7 @@
 package net.cmlzw.nineteen.controller;
 
 import net.cmlzw.nineteen.repository.QuizRepository;
+import net.cmlzw.nineteen.repository.TokenRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,8 @@ public class UserControllerTest {
     ConnectionRepository connectionRepository;
     @MockBean
     WeChatMp weChatMp;
+    @MockBean
+    TokenRepository tokenRepository;
 
     @Test
     public void sign() throws Exception {

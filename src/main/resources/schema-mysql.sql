@@ -76,8 +76,9 @@ create table if not exists authorities (id bigint auto_increment not null,
     primary key (id),
     foreign key (username) references users(username));
 
-create table if not exists mp_access_token (id bigint auto_increment not null,
-    access_token varchar(512) not null,
+create table if not exists token (id bigint auto_increment not null,
+    type varchar(64) not null,
+    content varchar(512) not null,
     expires_in bigint,
     expires_at bigint,
     version bigint,
