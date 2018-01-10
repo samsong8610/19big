@@ -88,7 +88,7 @@ public class UserController {
     public String login(HttpServletRequest request) {
         String agent = request.getHeader(HttpHeaders.USER_AGENT);
         Pattern wx = Pattern.compile(".*MicroMessenger.*", Pattern.CASE_INSENSITIVE);
-        if (wx.matcher(agent).matches()) {
+        if (agent == null || wx.matcher(agent).matches()) {
             return "redirect:/auth/wechat?scope=snsapi_login";
         }
         return "redirect:/auth/wechat?scope=snsapi_login_qrconnect";
