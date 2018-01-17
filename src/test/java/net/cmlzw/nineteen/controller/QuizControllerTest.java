@@ -389,4 +389,105 @@ public class QuizControllerTest {
                 .andExpect(jsonPath("$[4].organizationId").value(1));
     }
 
+    @Test
+    public void getBoards() throws Exception {
+        Organization org = new Organization();
+        org.setId(1L);
+        org.setName("org");
+        org.setTotalMembers(100);
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        List<Quiz> boards = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            User user = new User();
+            user.setUsername("u"+i);
+            user.setNickname("u"+i);
+            given(userRepository.findOne(user.getUsername())).willReturn(user);
+
+            Quiz newQuiz = new Quiz();
+            newQuiz.setUsername(user.getUsername());
+            newQuiz.setOrganizationId(org.getId());
+            newQuiz.setLevel(1);
+            newQuiz.setScore(i+1);
+            newQuiz.setPhone("15800000000");
+            newQuiz.setCreated(today);
+            newQuiz.setId(new Long(i));
+
+            boards.add(newQuiz);
+        }
+
+        Quiz tmp;
+        for (int i = 0; i < 15; i++) {
+            tmp = boards.get(i);
+            boards.set(i, boards.get(29 - i));
+            boards.set(29 - i, tmp);
+        }
+
+        given(orgRepository.findOne(org.getId())).willReturn(org);
+        given(repository.findTop20ByLevelOrderByScoreDescCreatedDesc(1)).willReturn(boards.subList(0, 20));
+        mockMvc.perform(get("/quizzes/boards"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0]").isArray())
+                .andExpect(jsonPath("$[0].length()").value(20));
+    }
+
+    @Test
+    public void getBoardsWithSameScore() throws Exception {
+        Organization org = new Organization();
+        org.setId(1L);
+        org.setName("org");
+        org.setTotalMembers(100);
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        List<Quiz> boards = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            User user = new User();
+            user.setUsername("u"+i);
+            user.setNickname("u"+i);
+            given(userRepository.findOne(user.getUsername())).willReturn(user);
+
+            Quiz newQuiz = new Quiz();
+            newQuiz.setUsername(user.getUsername());
+            newQuiz.setOrganizationId(org.getId());
+            newQuiz.setLevel(1);
+            newQuiz.setScore(i+1);
+            newQuiz.setPhone("15800000000");
+            newQuiz.setCreated(today);
+            newQuiz.setId(new Long(i));
+
+            boards.add(newQuiz);
+        }
+
+        Quiz tmp;
+        for (int i = 0; i < 15; i++) {
+            tmp = boards.get(i);
+            boards.set(i, boards.get(29 - i));
+            boards.set(29 - i, tmp);
+        }
+
+        // set quizzes between 21-25 to the same score as 20
+        tmp = boards.get(19);
+        List<Quiz> sameScoreQuizzes = new ArrayList<>();
+        sameScoreQuizzes.add(tmp);
+        for (int i = 20; i < 25; i++) {
+            Quiz quiz = boards.get(i);
+            quiz.setScore(tmp.getScore());
+            sameScoreQuizzes.add(quiz);
+        }
+
+        given(orgRepository.findOne(org.getId())).willReturn(org);
+        given(repository.findTop20ByLevelOrderByScoreDescCreatedDesc(1)).willReturn(boards.subList(0, 20));
+        given(repository.findByLevelAndScore(tmp.getLevel(), tmp.getScore())).willReturn(sameScoreQuizzes);
+        mockMvc.perform(get("/quizzes/boards").param("ext", "true"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0]").isArray())
+                .andExpect(jsonPath("$[0].length()").value(25));
+    }
+
 }

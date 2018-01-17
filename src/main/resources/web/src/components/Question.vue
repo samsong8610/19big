@@ -60,7 +60,7 @@
                 <el-switch v-model="currentLevel.active" active-color="#67c23a" inactive-color="#e6ebf5"></el-switch>
               </el-form-item>
               <div>
-                <el-radio-group v-model="editMode">
+                <el-radio-group v-model="editMode" size="small">
                   <el-radio-button label="逐行"></el-radio-button>
                   <el-radio-button label="批量"></el-radio-button>
                 </el-radio-group>
@@ -149,7 +149,6 @@ export default {
   computed: {
     bulkQuestions: {
       get: function () {
-        console.log('bulkQuestions get')
         let result = ''
         if (this.currentLevel && this.currentLevel.questions) {
           this.currentLevel.questions.forEach(q => {
@@ -164,7 +163,6 @@ export default {
         return result
       },
       set: function (newValue) {
-        console.log('bulkQuestions set')
         let questions = []
         if (newValue) {
           newValue.split('\n').forEach(line => {

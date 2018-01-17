@@ -5,4 +5,8 @@ if (Vue.http === undefined) {
   Vue.use(VueResource)
 }
 
-export default Vue.resource('/organizations/{id}')
+const customActions = {
+  getBoards: {method: 'GET', url: '/quizzes/boards'},
+  reset: {method: 'POST', url: '/organizations/archives'}
+}
+export default Vue.resource('/organizations/{id}', {}, customActions)

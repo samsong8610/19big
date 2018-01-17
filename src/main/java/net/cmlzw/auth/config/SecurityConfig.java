@@ -43,9 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/public/**", "/favicon.ico", "/console/**").permitAll()
                 .antMatchers("/static/MP_verify_GX9TZYFwRrjCnD90.txt", "/MP_verify_GX9TZYFwRrjCnD90.txt").permitAll()
 //                .antMatchers("/19da.html").permitAll() // TODO: remove permitAll for 19da.html
-                .antMatchers("/**").authenticated()
+                .antMatchers("/**").permitAll()
                 .and().csrf().disable();
         http.headers().frameOptions().sameOrigin();
-        http.apply(new SpringSocialConfigurer());
+//        http.apply(new SpringSocialConfigurer());
     }
 }

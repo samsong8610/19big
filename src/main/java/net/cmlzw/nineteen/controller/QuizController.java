@@ -12,10 +12,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -126,7 +123,8 @@ public class QuizController {
     }
 
     @GetMapping("/boards")
-    public List<List<QuizDto>> getBoards() {
+    public List<List<QuizDto>> getBoards(
+            @RequestParam(required = false, defaultValue = "false") boolean ext) {
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         List<List<QuizDto>> result = new ArrayList<>(3);
         for (int i = 0; i < 3; i++) {
@@ -134,6 +132,19 @@ public class QuizController {
 //            List<Quiz> quizzes = repository.findTop20ByLevelAndCreatedOrderByScoreDesc(i + 1, today);
             List<Quiz> quizzes = repository.findTop20ByLevelOrderByScoreDescCreatedDesc(i + 1);
             List<QuizDto> dtos = quizzes.stream().map(quiz -> valueFrom(quiz)).collect(Collectors.toList());
+            if (ext) {
+                // need include quizzes with the same score after 20th
+                if (quizzes.size() == 20) {
+                    Set<Long> ids = quizzes.stream().map(e -> e.getId()).collect(Collectors.toSet());
+                    Quiz last = quizzes.get(19);
+                    List<Quiz> sameScoreQuizzes = repository.findByLevelAndScore(last.getLevel(), last.getScore());
+                    List<QuizDto> sameScoreAfter20 = sameScoreQuizzes.stream()
+                            .filter(e -> !ids.contains(e.getId()))
+                            .map(quiz -> valueFrom(quiz))
+                            .collect(Collectors.toList());
+                    dtos.addAll(sameScoreAfter20);
+                }
+            }
             result.add(i, dtos);
         }
         return result;

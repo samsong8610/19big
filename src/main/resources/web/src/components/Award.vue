@@ -3,16 +3,16 @@
     <el-col :xs="{span: 22, offset: 1}" :lg="{span: 20, offset: 2}">
       <h2>奖品发放</h2>
       <el-row class="ops">
-        <el-col :xs="{span: 9,offset: 9}" :lg="{span:9,offset:9}">
+        <el-col :xs="{span: 9,offset: 8}" :lg="{span:9,offset:8}">
           <el-form :inline="true">
             <el-form-item label="搜索">
               <el-input type="text" v-model="phone" prefix-icon="el-icon-search" placeholder="电话" @change="searchRemotely"></el-input>
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :xs="{span:4}" :lg="{span:4}">
+        <el-col :xs="{span:5}" :lg="{span:5}">
           <el-button type="primary" size="small" @click="onRefresh"><i class="el-icon-refresh"></i>刷新</el-button>
-          <el-button type="primary" @click="onPresentAward"><i class="el-icon-check"></i>生成获奖名单</el-button>
+          <el-button type="primary" size="small" @click="onPresentAward"><i class="el-icon-check"></i>生成获奖名单</el-button>
         </el-col>
       </el-row>
       <el-table :data="displayedAwards" stripe border>
@@ -125,10 +125,7 @@ export default {
         this.$message({type: 'warning', message: `获取奖品发放失败，请稍后重试。原因：${JSON.stringify(reason)}。`})
       })
     },
-    onRefresh () {
-      this.load()
-    },
-    onPresentAward () {
+    present () {
       Api.award.save().then(resp => {
         this.$message('成功生成获奖名单。')
         resp.json().then(json => {
@@ -144,6 +141,20 @@ export default {
           message: err.message
         }
         this.$message({type: 'warning', message: `生成获奖名单失败。原因：‘${JSON.stringify(reason)}’。`})
+      })
+    },
+    onRefresh () {
+      this.load()
+    },
+    onPresentAward () {
+      this.$confirm(`生成获奖名单后会清空个人榜单，您确定要生成获奖名单吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(resp => {
+        this.present()
+      }).catch(() => {
+        this.$message({type: 'info', message: '操作取消。'})
       })
     },
     notify (award, index) {

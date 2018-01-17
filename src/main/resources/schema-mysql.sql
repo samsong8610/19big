@@ -19,7 +19,7 @@ create table if not exists UserConnection (userId varchar(255) not null,
 	unique index UserConnectionRank (userId, providerId, rank));
 
 create table if not exists award (id bigint auto_increment not null,
-    nickname varchar(255),
+    nickname varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci,
     phone varchar(11) not null,
     gift tinyint,
     created timestamp not null,
@@ -82,4 +82,12 @@ create table if not exists token (id bigint auto_increment not null,
     expires_in bigint,
     expires_at bigint,
     version bigint,
+    primary key (id));
+
+create table if not exists organization_archive (id bigint auto_increment not null,
+    organization_id bigint not null,
+    name varchar(255) not null,
+    total_members int,
+    submitted_members int,
+    created date not null,
     primary key (id));

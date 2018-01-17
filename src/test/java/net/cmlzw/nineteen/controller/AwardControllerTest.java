@@ -19,10 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.any;
@@ -255,6 +254,77 @@ public class AwardControllerTest {
         controller.calculateAwards();
         then(repository).should(never()).save(any(Iterable.class));
         then(jobLockRepository).should(never()).delete(AwardController.JOB_NAME);
+    }
+
+    @Test
+    public void presentGift() throws Exception {
+        Organization org = new Organization();
+        org.setId(1L);
+        org.setName("org");
+        org.setTotalMembers(100);
+        Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
+        List<Quiz> boards = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            User user = new User();
+            user.setUsername("u"+i);
+            user.setNickname("u"+i);
+            given(userRepository.findOne(user.getUsername())).willReturn(user);
+
+            Quiz newQuiz = new Quiz();
+            newQuiz.setUsername(user.getUsername());
+            newQuiz.setOrganizationId(org.getId());
+            newQuiz.setLevel(1);
+            newQuiz.setScore(i+1);
+            newQuiz.setPhone("15800000000");
+            newQuiz.setCreated(today);
+            newQuiz.setId(new Long(i));
+
+            boards.add(newQuiz);
+        }
+
+        Quiz tmp;
+        for (int i = 0; i < 15; i++) {
+            tmp = boards.get(i);
+            boards.set(i, boards.get(29 - i));
+            boards.set(29 - i, tmp);
+        }
+
+        // set quizzes between 21-25 to the same score as 20
+        Quiz last = boards.get(19);
+        List<Quiz> sameScoreQuizzes = new ArrayList<>();
+        sameScoreQuizzes.add(last);
+        for (int i = 20; i < 25; i++) {
+            Quiz quiz = boards.get(i);
+            quiz.setScore(last.getScore());
+            sameScoreQuizzes.add(quiz);
+        }
+
+        List<Award> awards = boards.stream().filter(q -> q.getScore() >= last.getScore())
+                .map(q -> {
+                    Award award = new Award();
+                    award.setNickname(q.getUsername()); // just use username id
+                    award.setGift(q.getLevel());
+                    award.setPhone(q.getPhone());
+                    award.setCreated(new Date());
+                    award.setNotified(false);
+                    award.setClaimed(false);
+                    return award;
+                })
+                .collect(Collectors.toList());
+
+        given(orgRepository.findOne(org.getId())).willReturn(org);
+        given(quizRepository.findTop20ByLevelOrderByScoreDescCreatedDesc(1)).willReturn(boards.subList(0, 20));
+        given(quizRepository.findByLevelAndScore(last.getLevel(), last.getScore())).willReturn(sameScoreQuizzes);
+        given(repository.findAll(any(PageRequest.class))).willReturn(new PageImpl<>(awards));
+        mockMvc.perform(post("/awards"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.first").value(true))
+                .andExpect(jsonPath("$.last").value(true))
+                .andExpect(jsonPath("$.number").value(0));
+        then(quizRepository).should().deleteAllInBatch();
     }
 
     private class ListSizeMatcher<I> extends ArgumentMatcher<I> {

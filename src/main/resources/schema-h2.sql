@@ -82,3 +82,19 @@ create table if not exists Mp_Access_Token (id bigint auto_increment not null,
     expires_at bigint,
     version bigint,
     primary key (id));
+
+create table if not exists Token (id bigint auto_increment not null,
+    type varchar(64) not null,
+    content varchar(512) not null,
+    expires_in bigint,
+    expires_at bigint,
+    version bigint,
+    primary key (id));
+
+create table if not exists OrganizationArchive (id bigint auto_increment not null,
+    organization_id bigint not null,
+    name varchar(255) not null,
+    total_members int,
+    submitted_members int,
+    created date not null,
+    primary key (id));

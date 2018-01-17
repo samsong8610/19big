@@ -5,10 +5,7 @@ import net.cmlzw.nineteen.repository.SocialMpAccessTokenRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +30,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableSocial
+@Profile({"prod", "qa"})
 public class SocialConfig implements SocialConfigurer {
     @Autowired
     DataSource dataSource;

@@ -28,4 +28,8 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Quiz findByUsernameAndLevel(String username, int level);
 
     List<Quiz> findByUsername(String username);
+
+    List<Quiz> findByLevelAndScore(int level, int score);
+
+    List<Quiz> findByLevelAndScoreGreaterThanEqual(int level, int score);
 }

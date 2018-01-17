@@ -38,9 +38,9 @@ public class UserController {
     UserRepository userRepository;
     @Autowired
     QuizRepository quizRepository;
-    @Autowired
+    @Autowired(required = false)
     ConnectionRepository connectionRepository;
-    @Autowired
+    @Autowired(required = false)
     WeChatMp weChatMp;
     @Value("${spring.social.wechat.mp.appid}")
     String mpAppId;

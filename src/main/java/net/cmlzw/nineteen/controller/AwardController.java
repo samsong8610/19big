@@ -47,19 +47,28 @@ public class AwardController {
         List<Award> awards = new ArrayList<>(60);
         for (int level = 0; level < 3; level++) {
             List<Quiz> quizzes = quizRepository.findTop20ByLevelOrderByScoreDescCreatedDesc(level + 1);
+            if (quizzes.size() > 0) {
+                Quiz last = quizzes.get(quizzes.size() - 1);
+                quizzes = quizRepository.findByLevelAndScoreGreaterThanEqual(level + 1, last.getScore());
+                logger.info(String.format("Found %d quizzes on level %d with score above or equal %d",
+                        quizzes.size(), level + 1, last.getScore()));
 
-            for (int j = 0; j < quizzes.size(); level++) {
-                Award award = new Award();
-                award.setNickname(getNickname(quizzes.get(level).getUsername()));
-                award.setGift(level);
-                award.setPhone(quizzes.get(level).getPhone());
-                award.setCreated(new Date());
-                award.setNotified(false);
-                award.setClaimed(false);
-                awards.add(award);
+                for (Quiz quiz : quizzes) {
+                    Award award = new Award();
+                    award.setNickname(getNickname(quiz.getUsername()));
+                    award.setGift(level + 1);
+                    award.setPhone(quiz.getPhone());
+                    award.setCreated(new Date());
+                    award.setNotified(false);
+                    award.setClaimed(false);
+                    awards.add(award);
+                }
             }
         }
         repository.save(awards);
+        logger.info(String.format("Present %d awards totally", awards.size()));
+        // clear all the quiz
+        quizRepository.deleteAllInBatch();
         PageRequest pr = new PageRequest(0,
                 20, Sort.Direction.DESC, "created");
         return list(pr);
