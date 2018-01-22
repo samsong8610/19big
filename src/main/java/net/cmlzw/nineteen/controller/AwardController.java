@@ -42,6 +42,7 @@ public class AwardController {
     UserRepository userRepository;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Slice<Award> present() {
         // note: present awards to the top 20 quizzes of each level
         List<Award> awards = new ArrayList<>(60);

@@ -7,6 +7,7 @@ import net.cmlzw.nineteen.repository.OrganizationRepository;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -36,6 +37,7 @@ public class OrganizationController {
         return result;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/archives")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void archive() {

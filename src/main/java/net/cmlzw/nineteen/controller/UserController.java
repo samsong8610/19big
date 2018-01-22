@@ -8,9 +8,13 @@ import net.cmlzw.nineteen.repository.QuizRepository;
 import net.cmlzw.nineteen.repository.TokenRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionRepository;
@@ -22,7 +26,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
@@ -34,6 +40,7 @@ import java.util.regex.Pattern;
 
 @Controller
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -49,7 +56,11 @@ public class UserController {
 
     @GetMapping("/userinfo")
     @ResponseBody
-    public Map<String, String> userInfo(Principal principal) {
+    public Map<String, String> userInfo(HttpServletResponse response, Principal principal) {
+        if (principal == null || StringUtils.isEmpty(principal.getName())) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return null;
+        }
         String username = principal.getName();
         HashMap<String, String> info = new HashMap<>();
         info.put("username", username);
@@ -93,6 +104,22 @@ public class UserController {
         }
         return "redirect:/auth/wechat?scope=snsapi_login_qrconnect";
 //        return "login";
+    }
+
+    @GetMapping("/19da.html")
+    public String home(HttpServletRequest request, HttpServletResponse response, Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        if (!StringUtils.isEmpty(username)) {
+            User user = userRepository.findOne(username);
+            if (user == null) {
+                throw new ResourceNotExistedException("user '" + username + "'");
+            }
+            logger.info("response with cookies username: {}, nickname: {}",
+                    user.getUsername(), user.getNickname());
+            response.addCookie(new Cookie("username", user.getUsername()));
+            response.addCookie(new Cookie("nickname", user.getNickname()));
+        }
+        return "19da";
     }
 
     @GetMapping("/jsapi/sign")

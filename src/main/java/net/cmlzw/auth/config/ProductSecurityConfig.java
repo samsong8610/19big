@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,9 +43,15 @@ public class ProductSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/public/**", "/favicon.ico").permitAll()
                 .antMatchers("/static/MP_verify_GX9TZYFwRrjCnD90.txt", "/MP_verify_GX9TZYFwRrjCnD90.txt").permitAll()
-//                .antMatchers("/19da.html").permitAll() // TODO: remove permitAll for 19da.html
+                .antMatchers("/19da.html").permitAll() // TODO: remove permitAll for 19da.html
+                .antMatchers(HttpMethod.GET, "/userinfo", "/questionlevels", "/quizzes/**", "/organizations").permitAll()
+                .antMatchers(HttpMethod.POST, "/quizzes").permitAll()
+                .antMatchers(HttpMethod.PUT, "/quizzes/**").permitAll()
+                .antMatchers("/connect/**").permitAll()
+                .antMatchers("/", "/index.html").hasAuthority("ADMIN")
                 .antMatchers("/**").authenticated()
                 .and().csrf().disable();
-        http.apply(new SpringSocialConfigurer());
+
+        http.apply(new SpringSocialConfigurer().postLoginUrl("/19da.html"));
     }
 }

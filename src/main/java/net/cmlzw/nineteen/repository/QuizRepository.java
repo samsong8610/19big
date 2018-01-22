@@ -32,4 +32,6 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<Quiz> findByLevelAndScore(int level, int score);
 
     List<Quiz> findByLevelAndScoreGreaterThanEqual(int level, int score);
+
+    List<Quiz> findByPhone(String phone);
 }

@@ -2,6 +2,7 @@ package net.cmlzw.nineteen.controller;
 
 import net.cmlzw.nineteen.domain.Organization;
 import net.cmlzw.nineteen.domain.Quiz;
+import net.cmlzw.nineteen.domain.User;
 import net.cmlzw.nineteen.repository.OrganizationRepository;
 import net.cmlzw.nineteen.repository.QuizRepository;
 import net.cmlzw.nineteen.repository.UserRepository;
@@ -36,11 +37,25 @@ public class QuizController {
 //            logger.info(String.format("Username %s has submitted today", username));
 //            throw new AlreadySubmittedException();
 //        }
+
+        List<Quiz> byPhone = null;
+        if (username == null) {
+            // when login failed, try to find a quiz by phone to locate the username
+            byPhone = repository.findByPhone(quiz.getPhone());
+            if (byPhone != null && byPhone.size() > 0) {
+                username = byPhone.get(0).getUsername();
+            }
+            // default to the phone
+            if (username == null) {
+                username = quiz.getPhone();
+            }
+        }
+
         Quiz found = repository.findByUsernameAndLevel(username, quiz.getLevel());
         if (found != null) {
-            logger.info(String.format("Username %s has a quiz at level %d with score %d",
-                    username, quiz.getLevel(), quiz.getScore()));
             if (quiz.getScore() > found.getScore()) {
+                logger.info(String.format("Username %s has a quiz at level %d with score %d",
+                        username, quiz.getLevel(), quiz.getScore()));
                 found.setScore(quiz.getScore());
                 repository.save(found);
             }
@@ -59,7 +74,9 @@ public class QuizController {
                     break;
                 }
                 int count = repository.countDistinctUsernameByOrganizationId(quiz.getOrganizationId());
-                org.setSubmittedMembers(count);
+                if (count <= org.getTotalMembers()) {
+                    org.setSubmittedMembers(count);
+                }
                 try {
                     orgRepository.save(org);
                     break;
@@ -76,8 +93,7 @@ public class QuizController {
     }
 
     @PutMapping("/{id}")
-    public QuizDto update(@PathVariable Long id, @RequestBody Quiz quiz, Principal principal) {
-        String username = principal.getName();
+    public QuizDto update(@PathVariable Long id, @RequestBody Quiz quiz) {
         Quiz found = repository.findOne(id);
         if (found == null) {
             throw new ResourceNotExistedException("quiz");

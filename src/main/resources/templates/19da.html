@@ -12,6 +12,87 @@
 <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
 	(function () {
+		var config_jsapi = function () {
+			var url = location.href.split("#")[0];
+			url = url.replace("&", "%26");
+			$.getJSON('/jsapi/sign?url=' + url, function (json) {
+				console.log("sign " + url + " for jsapi: " + JSON.stringify(json))
+				if (json) {
+					wx.config({
+						debug: false,
+						appId: json.appId,
+						timestamp: json.timestamp,
+						nonceStr: json.nonceStr,
+						signature: json.signature,
+						jsApiList: [
+							"onMenuShareAppMessage",
+							"onMenuShareTimeline",
+							"onMenuShareQQ",
+							"onMenuShareQZone",
+							"showOptionMenu"// 所有要调用的 API 都要加到这个列表中
+						]
+					});
+
+					wx.ready(function () {
+						wx.showOptionMenu();
+						wx.onMenuShareTimeline({
+							title: document.title, // 分享标题
+							link: json.url, // 分享链接
+							imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+							success: function () {
+								console.log('share to Timeline success');
+							},
+							cancel: function () {
+								console.log('cancel share to Timeline');
+							}
+						});
+
+						wx.onMenuShareAppMessage({
+							title: document.title, // 分享标题
+							desc: '快来刷新你的记录吧！', // 分享描述
+							link: json.url, // 分享链接
+							imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+							type: '', // 分享类型,music、video或link，不填默认为link
+							dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+							success: function () {
+								console.log('share to AppMessage success');
+							},
+							cancel: function () {
+								console.log('cancel share to AppMessage');
+							}
+						});
+						wx.onMenuShareQQ({
+							title: document.title, // 分享标题
+							desc: '快来刷新你的记录吧！', // 分享描述
+							link: json.url, // 分享链接
+							imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+							success: function () {
+								console.log('share to QQ success');
+							},
+							cancel: function () {
+								console.log('cancel share to QQ');
+							}
+						});
+
+						wx.onMenuShareQZone({
+							title: document.title, // 分享标题
+							desc: '快来刷新你的记录吧！', // 分享描述
+							link: json.url, // 分享链接
+							imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
+							success: function () {
+								console.log('share to QZone success');
+							},
+							cancel: function () {
+								console.log('cancel share to QZone');
+							}
+						});
+					});
+					wx.error(res => {
+						console.log('WxConfig error: ' + JSON.stringify(res));
+					});
+				}
+			});
+		}
 		window.headimgurl = "http://image.cmlzw.net/19da/fenxiang-thumb.jpg"
 		$.get('/userinfo').done((data, status, xhr) => {
 			window.nickname = data.nickname;
@@ -19,8 +100,18 @@
 			window.username = data.username;
 			window.phoneNum = data.phone;
 			window.organizationId = data.organizationId;
-		}).fail((err) => {
-			console.log(JSON.stringify(err));
+			config_jsapi();
+		}).fail((xhr, status, err) => {
+			console.log(`get userinfo failed: ${status}(${xhr.status})`)
+			if (xhr.status === 401) {
+				if (navigator.userAgent.match(/MicroMessenger/i)) {
+					location.href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxffcf430ee87dea58&redirect_uri=http%3a%2f%2f19da.cmlzw.net%2fauth%2fwechat&response_type=code&scope=snsapi_login&connect_redirect=1#wechat_redirect";
+				} else {
+					location.href="/auth/wechat?scope=snsapi_login_qrconnect"
+				}
+			} else {
+				console.log(JSON.stringify(err));
+			}
 		});
 	})();
 
@@ -1240,88 +1331,6 @@ body>a {display:none;}
 
 	};
 	guess.init();
-	(function(){
-		var url = location.href.split("#")[0];
-		url = url.replace("&","%26");
-		$.getJSON('http://19da.cmlzw.net/jsapi/sign?url='+url,function(json){
-			console.log("sign " + url + " for jsapi: " + JSON.stringify(json))
-			if(json){
-				wx.config({
-					debug: false,
-					appId: json.appId,
-					timestamp: json.timestamp,
-					nonceStr: json.nonceStr,
-					signature: json.signature,
-					jsApiList: [
-					"onMenuShareAppMessage",
-					"onMenuShareTimeline",
-					"onMenuShareQQ",
-					"onMenuShareQZone",
-					"showOptionMenu"// 所有要调用的 API 都要加到这个列表中
-					]
-				});
-
-				wx.ready(function(){
-
-					wx.showOptionMenu();
-					wx.onMenuShareTimeline({
-						title: document.title, // 分享标题
-						link: json.url, // 分享链接
-						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-						success: function () { 
-							console.log('share to Timeline success');
-						},
-						cancel: function () { 
-							console.log('cancel share to Timeline');
-						}
-					});
-
-					wx.onMenuShareAppMessage({
-						title: document.title, // 分享标题
-						desc: '快来刷新你的记录吧！', // 分享描述
-						link: json.url, // 分享链接
-						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-						type: '', // 分享类型,music、video或link，不填默认为link
-						dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-						success: function () { 
-							console.log('share to AppMessage success');
-						},
-						cancel: function () { 
-							console.log('cancel share to AppMessage');
-						}
-					});
-					wx.onMenuShareQQ({
-						title: document.title, // 分享标题
-						desc: '快来刷新你的记录吧！', // 分享描述
-						link: json.url, // 分享链接
-						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-						success: function () { 
-							console.log('share to QQ success');
-						},
-						cancel: function () { 
-							console.log('cancel share to QQ');
-						}
-					});
-
-					wx.onMenuShareQZone({
-						title: document.title, // 分享标题
-						desc: '快来刷新你的记录吧！', // 分享描述
-						link: json.url, // 分享链接
-						imgUrl: decodeURIComponent(window.headimgurl), // 分享图标
-						success: function () { 
-							console.log('share to QZone success');
-						},
-						cancel: function () { 
-							console.log('cancel share to QZone');
-						}
-					});
-				});
-				wx.error(res => {
-					console.log('WxConfig error: ' + JSON.stringify(res));
-				});
-			}
-		});
-	})();
 
 })(jQuery)
   
