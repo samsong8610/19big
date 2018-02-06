@@ -8,11 +8,13 @@ public class Award {
     @Id
     @GeneratedValue
     Long id;
+    String username;
     @Column(nullable = false)
     String nickname;
     @Column(nullable = false, length = 11)
     String phone;
     int gift;
+    int score;
     @Column(nullable = false)
     Date created;
     boolean notified;
@@ -26,6 +28,14 @@ public class Award {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getNickname() {
@@ -50,6 +60,14 @@ public class Award {
 
     public void setGift(int gift) {
         this.gift = gift;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public Date getCreated() {

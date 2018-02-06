@@ -67,6 +67,11 @@ spring:
     hibernate:
       ddl-auto: update
     show_sql: true
+logging:
+  level:
+    org.springframework.social: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
 
 ---
 
@@ -84,7 +89,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-    show_sql: true
+    show_sql: false
 server:
   session:
     timeout: 900

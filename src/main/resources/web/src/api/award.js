@@ -6,6 +6,7 @@ if (Vue.http === undefined) {
 }
 
 const customActions = {
-  findByPhone: {method: 'GET', url: '/awards/queries/phone/{phone}'}
+  findByPhone: {method: 'GET', url: '/awards/queries/phone/{phone}'},
+  getPage: {method: 'GET', url: '/awards?page={page}&size={size}'}
 }
 export default Vue.resource('/awards/{id}', {}, customActions)

@@ -6,7 +6,7 @@ if (Vue.http === undefined) {
 }
 
 const customActions = {
-  getBoards: {method: 'GET', url: '/quizzes/boards'},
+  getBoards: {method: 'GET', url: '/quizzes/boards?ext={ext}'},
   reset: {method: 'POST', url: '/organizations/archives'}
 }
 export default Vue.resource('/organizations/{id}', {}, customActions)

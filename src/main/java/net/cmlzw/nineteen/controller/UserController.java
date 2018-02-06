@@ -106,21 +106,21 @@ public class UserController {
 //        return "login";
     }
 
-    @GetMapping("/19da.html")
-    public String home(HttpServletRequest request, HttpServletResponse response, Principal principal) {
-        String username = principal != null ? principal.getName() : null;
-        if (!StringUtils.isEmpty(username)) {
-            User user = userRepository.findOne(username);
-            if (user == null) {
-                throw new ResourceNotExistedException("user '" + username + "'");
-            }
-            logger.info("response with cookies username: {}, nickname: {}",
-                    user.getUsername(), user.getNickname());
-            response.addCookie(new Cookie("username", user.getUsername()));
-            response.addCookie(new Cookie("nickname", user.getNickname()));
-        }
-        return "19da";
-    }
+//    @GetMapping("/19da.html")
+//    public String home(HttpServletRequest request, HttpServletResponse response, Principal principal) {
+//        String username = principal != null ? principal.getName() : null;
+//        if (!StringUtils.isEmpty(username)) {
+//            User user = userRepository.findOne(username);
+//            if (user == null) {
+//                throw new ResourceNotExistedException("user '" + username + "'");
+//            }
+//            logger.info("response with cookies username: {}, nickname: {}",
+//                    user.getUsername(), user.getNickname());
+//            response.addCookie(new Cookie("username", user.getUsername()));
+//            response.addCookie(new Cookie("nickname", user.getNickname()));
+//        }
+//        return "19da";
+//    }
 
     @GetMapping("/jsapi/sign")
     @ResponseBody

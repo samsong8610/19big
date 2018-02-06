@@ -20,6 +20,7 @@
         <el-table-column prop="nickname" label="微信昵称"></el-table-column>
         <el-table-column prop="phone" label="电话"></el-table-column>
         <el-table-column prop="gift" label="奖品"></el-table-column>
+        <el-table-column prop="score" label="成绩"></el-table-column>
         <el-table-column prop="created" label="获奖日期">
           <template slot-scope="scope">
             <!-- {{scope.row.created | safeMoment('YYYY-MM-DD HH:mm:ss')}} -->
@@ -44,8 +45,8 @@
         </el-table-column>
       </el-table>
       <el-row>
-        <el-col v-show="!pagination.first"><el-button type="text" @click="previousPage"><i class="el-icon-"></i>上一页</el-button></el-col>
-        <el-col v-show="!pagination.last"><el-button type="text" @click="nextPage"><i class="el-icon-"></i>下一页</el-button></el-col>
+        <el-col><el-button v-show="!pagination.first" type="text" @click="previousPage"><i class="el-icon-"></i>上一页</el-button>
+        <el-button v-show="!pagination.last" type="text" @click="nextPage"><i class="el-icon-"></i>下一页</el-button></el-col>
       </el-row>
     </el-col>
   </el-row>
@@ -103,12 +104,13 @@ export default {
   methods: {
     load (page) {
       // this.awards = [
-      //   {id: 1, nickname: 'Sam', phone: '158****6899', gift: '学农奖品', created: 1511620429863, claimed: 1511620439863},
-      //   {id: 2, nickname: 'Sam', phone: '152****6899', gift: '学霸奖品', created: 1511620429863, claimed: 1511620439863},
-      //   {id: 3, nickname: 'Sam', phone: '158****6898', gift: '学神奖品', created: 1511620429863, claimed: undefined}
+      //   {id: 1, nickname: 'Sam', phone: '158****6899', gift: '学农奖品', score： 40, created: 1511620429863, claimed: 1511620439863},
+      //   {id: 2, nickname: 'Sam', phone: '152****6899', gift: '学霸奖品', score: 40, created: 1511620429863, claimed: 1511620439863},
+      //   {id: 3, nickname: 'Sam', phone: '158****6898', gift: '学神奖品', score: 40, created: 1511620429863, claimed: undefined}
       // ]
       let p = page || 0
-      Api.award.get({}, {page: p, size: 50}).then(resp => {
+      console.log('get award page ' + p)
+      Api.award.getPage({page: p, size: 100}).then(resp => {
         resp.json().then(json => {
           this.awards = json.content
           this.pagination.first = json.first

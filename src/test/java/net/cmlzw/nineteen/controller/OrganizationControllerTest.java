@@ -1,7 +1,9 @@
 package net.cmlzw.nineteen.controller;
 
+import net.cmlzw.nineteen.domain.AuditLog;
 import net.cmlzw.nineteen.domain.Organization;
 import net.cmlzw.nineteen.domain.OrganizationArchive;
+import net.cmlzw.nineteen.repository.AuditLogRepository;
 import net.cmlzw.nineteen.repository.OrganizationArchiveRepository;
 import net.cmlzw.nineteen.repository.OrganizationRepository;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,6 +24,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,6 +41,8 @@ public class OrganizationControllerTest {
     OrganizationRepository repository;
     @MockBean
     OrganizationArchiveRepository archiveRepository;
+    @MockBean
+    AuditLogRepository auditLogRepository;
     @Autowired
     MockMvc mockMvc;
 
@@ -80,11 +86,13 @@ public class OrganizationControllerTest {
         }
 
         given(repository.findAll()).willReturn(organizations);
-        mockMvc.perform(post("/organizations/archives"))
+        mockMvc.perform(post("/organizations/archives")
+                .principal(new UsernamePasswordAuthenticationToken("u1", "p")))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         then(archiveRepository).should().save(anyCollectionOf(OrganizationArchive.class));
         then(repository).should().save(anyCollectionOf(Organization.class));
+        then(auditLogRepository).should().save(any(AuditLog.class));
     }
 
     @Test

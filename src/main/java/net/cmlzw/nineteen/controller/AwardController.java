@@ -1,13 +1,7 @@
 package net.cmlzw.nineteen.controller;
 
-import net.cmlzw.nineteen.domain.Award;
-import net.cmlzw.nineteen.domain.JobLock;
-import net.cmlzw.nineteen.domain.Quiz;
-import net.cmlzw.nineteen.domain.User;
-import net.cmlzw.nineteen.repository.AwardRepository;
-import net.cmlzw.nineteen.repository.JobLockRepository;
-import net.cmlzw.nineteen.repository.QuizRepository;
-import net.cmlzw.nineteen.repository.UserRepository;
+import net.cmlzw.nineteen.domain.*;
+import net.cmlzw.nineteen.repository.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +15,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.security.Principal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/awards")
@@ -40,10 +33,14 @@ public class AwardController {
     QuizRepository quizRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    QuizArchiveRepository archiveRepository;
+    @Autowired
+    AuditLogRepository auditRepository;
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Slice<Award> present() {
+    public Slice<Award> present(Principal principal) {
         // note: present awards to the top 20 quizzes of each level
         List<Award> awards = new ArrayList<>(60);
         for (int level = 0; level < 3; level++) {
@@ -51,13 +48,23 @@ public class AwardController {
             if (quizzes.size() > 0) {
                 Quiz last = quizzes.get(quizzes.size() - 1);
                 quizzes = quizRepository.findByLevelAndScoreGreaterThanEqual(level + 1, last.getScore());
+                Set<String> usernames = new HashSet<>();
+                List<Quiz> toAwards = new ArrayList<>(40);
+                for (Quiz each : quizzes) {
+                    if (!usernames.contains(each.getUsername())) {
+                        usernames.add(each.getUsername());
+                        toAwards.add(each);
+                    }
+                }
                 logger.info(String.format("Found %d quizzes on level %d with score above or equal %d",
-                        quizzes.size(), level + 1, last.getScore()));
+                        toAwards.size(), level + 1, last.getScore()));
 
-                for (Quiz quiz : quizzes) {
+                for (Quiz quiz : toAwards) {
                     Award award = new Award();
+                    award.setUsername(quiz.getUsername());
                     award.setNickname(getNickname(quiz.getUsername()));
                     award.setGift(level + 1);
+                    award.setScore(quiz.getScore());
                     award.setPhone(quiz.getPhone());
                     award.setCreated(new Date());
                     award.setNotified(false);
@@ -68,8 +75,12 @@ public class AwardController {
         }
         repository.save(awards);
         logger.info(String.format("Present %d awards totally", awards.size()));
+        List<Quiz> all = quizRepository.findAll();
+        List<QuizArchive> archives = all.stream().map(QuizArchive::new).collect(Collectors.toList());
+        archiveRepository.save(archives);
         // clear all the quiz
         quizRepository.deleteAllInBatch();
+        auditRepository.save(new AuditLog(principal.getName(), "present"));
         PageRequest pr = new PageRequest(0,
                 20, Sort.Direction.DESC, "created");
         return list(pr);

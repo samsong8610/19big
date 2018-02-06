@@ -29,7 +29,7 @@ public class QuizController {
 
     @PostMapping
     public QuizDto create(@RequestBody Quiz quiz, Principal principal) {
-        String username = principal.getName();
+        String username = principal == null ? null : principal.getName();
         Date today = DateUtils.truncate(new Date(), Calendar.DAY_OF_MONTH);
         // note: allow submit many times but only record the best score
 //        Quiz found = repository.findByUsernameAndLevelAndCreated(username, quiz.getLevel(), today);
@@ -51,8 +51,13 @@ public class QuizController {
             }
         }
 
-        Quiz found = repository.findByUsernameAndLevel(username, quiz.getLevel());
-        if (found != null) {
+        List<Quiz> quizzes = repository.findByUsernameAndLevelOrderByScoreDesc(username, quiz.getLevel());
+        if (quizzes != null && quizzes.size() > 0) {
+            Quiz found = quizzes.get(0);
+            if (quizzes.size() > 1) {
+                logger.info(String.format("Username %s has %d quizzes, delete the redundant", username, quizzes.size()));
+                repository.deleteInBatch(quizzes.subList(1, quizzes.size()));
+            }
             if (quiz.getScore() > found.getScore()) {
                 logger.info(String.format("Username %s has a quiz at level %d with score %d",
                         username, quiz.getLevel(), quiz.getScore()));
@@ -60,6 +65,11 @@ public class QuizController {
                 repository.save(found);
             }
             return valueFrom(found);
+        }
+
+        if (username == null) {
+            logger.error("invalid quiz submit, username is null or phone is null");
+            throw new InvalidQuizException();
         }
 
         quiz.setUsername(username);

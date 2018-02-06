@@ -79,7 +79,7 @@ export default {
       // ]
     },
     loadBoards () {
-      Api.board.getBoards().then(resp => {
+      Api.board.getBoards({ext: true}).then(resp => {
         resp.json().then(json => {
           this.boards = json
           this.$message({type: 'success', message: '获取个人榜单成功'})

@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -48,6 +50,10 @@ public class AwardControllerTest {
     QuizRepository quizRepository;
     @MockBean
     JobLockRepository jobLockRepository;
+    @MockBean
+    QuizArchiveRepository archiveRepository;
+    @MockBean
+    AuditLogRepository auditRepository;
     @Autowired
     AwardController controller;
     @Autowired
@@ -316,7 +322,7 @@ public class AwardControllerTest {
         given(quizRepository.findTop20ByLevelOrderByScoreDescCreatedDesc(1)).willReturn(boards.subList(0, 20));
         given(quizRepository.findByLevelAndScore(last.getLevel(), last.getScore())).willReturn(sameScoreQuizzes);
         given(repository.findAll(any(PageRequest.class))).willReturn(new PageImpl<>(awards));
-        mockMvc.perform(post("/awards"))
+        mockMvc.perform(post("/awards").principal(new UsernamePasswordAuthenticationToken("u1", "p")))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -324,7 +330,9 @@ public class AwardControllerTest {
                 .andExpect(jsonPath("$.first").value(true))
                 .andExpect(jsonPath("$.last").value(true))
                 .andExpect(jsonPath("$.number").value(0));
+        then(archiveRepository).should().save(anyListOf(QuizArchive.class));
         then(quizRepository).should().deleteAllInBatch();
+        then(auditRepository).should().save(any(AuditLog.class));
     }
 
     private class ListSizeMatcher<I> extends ArgumentMatcher<I> {

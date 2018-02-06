@@ -19,9 +19,11 @@ create table if not exists UserConnection (userId varchar(255) not null,
 	unique index UserConnectionRank (userId, providerId, rank));
 
 create table if not exists award (id bigint auto_increment not null,
+    username varchar(255),
     nickname varchar(255) character set utf8mb4 collate utf8mb4_unicode_ci,
     phone varchar(11) not null,
     gift tinyint,
+    score int,
     created timestamp not null,
     notified boolean,
     claimed boolean,
@@ -90,4 +92,20 @@ create table if not exists organization_archive (id bigint auto_increment not nu
     total_members int,
     submitted_members int,
     created date not null,
+    primary key (id));
+
+create table if not exists audit_log (id bigint auto_increment not null,
+    username varchar(255) not null,
+    op varchar(64) not null,
+    created datetime not null,
+    primary key (id));
+
+create table if not exists quiz_archive (id bigint auto_increment not null,
+    level tinyint,
+    username varchar(255) not null,
+    phone varchar(11) not null,
+    organization_id bigint,
+    score int,
+    created date not null,
+    archived datetime not null,
     primary key (id));

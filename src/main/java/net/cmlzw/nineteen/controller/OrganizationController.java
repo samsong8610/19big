@@ -1,7 +1,9 @@
 package net.cmlzw.nineteen.controller;
 
+import net.cmlzw.nineteen.domain.AuditLog;
 import net.cmlzw.nineteen.domain.Organization;
 import net.cmlzw.nineteen.domain.OrganizationArchive;
+import net.cmlzw.nineteen.repository.AuditLogRepository;
 import net.cmlzw.nineteen.repository.OrganizationArchiveRepository;
 import net.cmlzw.nineteen.repository.OrganizationRepository;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -11,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +28,8 @@ public class OrganizationController {
     OrganizationRepository repository;
     @Autowired
     OrganizationArchiveRepository archiveRepository;
+    @Autowired
+    AuditLogRepository auditLogRepository;
 
     @GetMapping
     public List<OrganizationDto> list() {
@@ -40,7 +45,7 @@ public class OrganizationController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/archives")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void archive() {
+    public void archive(Principal principal) {
         List<Organization> all = repository.findAll();
         List<OrganizationArchive> archives = all.stream().map(OrganizationArchive::valueFrom).collect(Collectors.toList());
         archiveRepository.save(archives);
@@ -50,6 +55,7 @@ public class OrganizationController {
             each.setSubmittedMembers(0);
         }
         repository.save(all);
+        auditLogRepository.save(new AuditLog(principal.getName(), "archive"));
     }
 
     @GetMapping("/archives")
