@@ -1279,7 +1279,19 @@ body>a {display:none;}
 			var appendBoardLine = function ($parent, board) {
 				$parent.empty();
 				board.forEach((v, i) => {
-					$parent.append('<li><span class="nickname">' + v.user.nickname + '</span><span class="score">(' + v.score + ')</span></li>');
+					let nickname = null;
+					if (v.user) {
+						if (v.user.nickname) {
+							nickname = v.user.nickname;
+						}
+					}
+					if (nickname === null && v.phone) {
+						nickname = v.phone.slice(0, 3) + '****' + v.phone.slice(-4);
+					}
+					if (nickname === null) {
+						nickname =  '匿名';
+					}
+					$parent.append('<li><span class="nickname">' + nickname + '</span><span class="score">(' + v.score + ')</span></li>');
 				});
 			};
 			$.getJSON('/quizzes/boards').done(json => {

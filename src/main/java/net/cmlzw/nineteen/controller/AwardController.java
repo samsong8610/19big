@@ -62,7 +62,7 @@ public class AwardController {
                 for (Quiz quiz : toAwards) {
                     Award award = new Award();
                     award.setUsername(quiz.getUsername());
-                    award.setNickname(getNickname(quiz.getUsername()));
+                    award.setNickname(getNickname(quiz));
                     award.setGift(level + 1);
                     award.setScore(quiz.getScore());
                     award.setPhone(quiz.getPhone());
@@ -185,7 +185,7 @@ public class AwardController {
             }
             for (int i = 0; i < count; i++) {
                 Award award = new Award();
-                award.setNickname(getNickname(quizzes.get(i).getUsername()));
+                award.setNickname(getNickname(quizzes.get(i)));
                 award.setGift(level);
                 award.setPhone(quizzes.get(i).getPhone());
                 award.setCreated(new Date());
@@ -197,9 +197,20 @@ public class AwardController {
         repository.save(awards);
     }
 
-    private String getNickname(String username) {
+    private String getNickname(Quiz quiz) {
+        String username = quiz.getUsername();
         try {
             User user = userRepository.findOne(username);
+            if (user == null || user.getUsername() == null) {
+                logger.warn("Could not find user with username " + username + ", try to find user by a quiz.");
+                if (quiz.getPhone() != null) {
+                    List<Quiz> byPhone = quizRepository.findByPhone(quiz.getPhone());
+                    if (byPhone.size() > 0) {
+                        username = byPhone.get(0).getUsername();
+                        user = userRepository.findOne(username);
+                    }
+                }
+            }
             if (user != null && user.getNickname() != null) {
                 return user.getNickname();
             }

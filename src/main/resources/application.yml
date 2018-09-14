@@ -13,6 +13,11 @@ spring:
     #   mp:
     #     appid: your-app-id
     #     appsecret: your-app-secret
+      appid: wxffcf430ee87dea58
+      appsecret: f549517749f8d4096a7970a8fbab6f46
+      mp:
+        appid: wx979067e69c551cb8
+        appsecret: 58900291e6523c9419c75c4036ce5dba
 ---
 
 spring:

@@ -45,10 +45,11 @@ public class QuizController {
             if (byPhone != null && byPhone.size() > 0) {
                 username = byPhone.get(0).getUsername();
             }
-            // default to the phone
-            if (username == null) {
-                username = quiz.getPhone();
-            }
+        }
+
+        if (username == null) {
+            logger.error("invalid quiz submit, username is null");
+            throw new InvalidQuizException();
         }
 
         List<Quiz> quizzes = repository.findByUsernameAndLevelOrderByScoreDesc(username, quiz.getLevel());
@@ -65,11 +66,6 @@ public class QuizController {
                 repository.save(found);
             }
             return valueFrom(found);
-        }
-
-        if (username == null) {
-            logger.error("invalid quiz submit, username is null or phone is null");
-            throw new InvalidQuizException();
         }
 
         quiz.setUsername(username);

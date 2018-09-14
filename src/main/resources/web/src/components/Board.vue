@@ -33,6 +33,7 @@
           <el-table :data="board" stripe border>
             <el-table-column type="index" width="50"></el-table-column>
             <el-table-column prop="user.nickname" label="昵称"></el-table-column>
+            <el-table-column prop="phone" label="电话"></el-table-column>
             <el-table-column prop="score" label="成绩"></el-table-column>
           </el-table>
         </el-col>
